@@ -1,0 +1,14 @@
+*.DS_Store
+*.ipynb_checkpoints
+
+#Tex
+*.out
+*.log
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+*eps-converted-to.pdf

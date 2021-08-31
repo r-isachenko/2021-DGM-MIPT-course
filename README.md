@@ -17,9 +17,9 @@ The course is accompanied by practical tasks that allow you to understand the pr
 
 ## Course materials
 
-| Lecture | Date | Description | Lecture | 
-|---------|------|-------------|--------|
-| 1 | September, 1 | ?? | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | 
+| Lecture | Date | Description | Lecture | Video |
+|---------|------|-------------|---------|-------| 
+| 1 | September, 1 | ?? | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | |
 
 
 ## Homeworks 
