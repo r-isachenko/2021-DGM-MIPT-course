@@ -8,6 +8,7 @@
 *.bbl
 *.blg
 *.synctex.gz
+*.gz(busy)
 *.toc
 *.nav
 *.snm
