@@ -19,7 +19,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 
 | Lecture | Date | Description | Lecture | Video |
 |---------|------|-------------|---------|-------| 
-| 1 | September, 1 | ?? | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | |
+| 0 | September, 8 | Intro | [slides](lectures/intro.pdf) |  |
+| 1 | September, 8 | Logistics. Motivation. Divergence minimization framework. Autoregressive modelling. | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | TBA |
 
 
 ## Homeworks 
