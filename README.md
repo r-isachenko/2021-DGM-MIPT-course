@@ -40,8 +40,11 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
 
+## Previous episodes
+- [OzonMasters, spring 2021](https://github.com/r-isachenko/2021-DGM-Ozon-course)
+- [MIPT, autumn 2020](https://github.com/r-isachenko/2020-DGM-MIPT-course)
+
 ## Author
 
-**telegram:** @roman_isachenko
-
-**e-mail:** roman.isachenko@phystech.edu
+- **telegram:** @roman_isachenko
+- **e-mail:** roman.isachenko@phystech.edu
