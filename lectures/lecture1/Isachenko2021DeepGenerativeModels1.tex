@@ -164,7 +164,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 	\begin{minipage}[t]{0.6\columnwidth}
 	    Let $x \sim \text{Categorical}(\bpi)$. The histogram is totally defined by
 		\[
-		    \pi_k = \pi(x = k) = \frac{\sum_{i=1}^k [x_i = k]}{n}.
+		    \pi_k = \pi(x = k) = \frac{\sum_{i=1}^n [x_i = k]}{n}.
 		\]
 		\textbf{Problem:} curse of dimensionality (number of bins grows exponentially). \\
 		\end{minipage}%
@@ -317,7 +317,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
     		\item sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
     		\item sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
     		\item \dots
-    		\item sample $\hat{x}_m \sim p(x_n | \hat{\bx}_{1:m-1}, \btheta)$;
+    		\item sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
     		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
     	\end{itemize}
         \item Each conditional $p(x_i | \bx_{1:i - 1}, \btheta)$ could be modelled by neural network.
@@ -372,95 +372,6 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 		\item RNN suffers from vanishing and exploding gradients.
 	\end{itemize}
 	 \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
-\end{frame}
-%=======
-\begin{frame}{Char RNN}
-	Model tries to predict the next token (single letter) from previous context.
-	\begin{minipage}[t]{0.55\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/char_rnn.png}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.44\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/char_rnn_output.png}
-		\end{figure}
-	\end{minipage}
-\myfootnotewithlink{http://karpathy.github.io/2015/05/21/rnn-effectiveness/}{image credit: http://karpathy.github.io/2015/05/21/rnn-effectiveness}
-\end{frame}
-%=======
-\begin{frame}{Autoregressive models}
-		\begin{itemize}
-			\item Convolutions could be used for autoregressive models, but they have to be \textbf{causal}. \\
-			\item Try to find and understand the difference between Conv A/B.
-		    \begin{figure}
-		        \centering
-		        \includegraphics[width=0.7\linewidth]{figs/sequential_CNN}
-		    \end{figure}
-		    \item Could learn long-range dependecies.
-		    \item Do not suffer from gradient issues.
-		    \item Easy to estimate probability for given input, but hard generation of new samples (the sequential process).
-	   	\end{itemize}
-	    \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
-\end{frame}
-%=======
-\begin{frame}{MADE}
-	\begin{itemize}
-		\item Vanila autoencoder is not a generative model. Why?
-		\item Let mask the weight matrices to make the model generative: $\bW_M = \bW \cdot \bM$.
-		\begin{figure}
-		    \centering
-		    \includegraphics[width=0.7\linewidth]{figs/made}
-		\end{figure}
-		\item The question is how to create matrices $\bM$ which produce the autoregressive property?
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
-\end{frame}
-%=======
-\begin{frame}{MADE}
-		\begin{minipage}[t]{0.65\columnwidth}
-		    \vspace{-0.5cm}
-			\begin{block}{Masks generation}
-				\begin{itemize}
-					\item Define the ordering of input elements from 1 to $m$.
-					\item Assign the random number $k$ from 1 to $m - 1$ to each hidden unit. The number gives the
-					maximum number of input units to which the unit can be connected.
-					\item Connect each hidden unit with number $k$ with the previous layer units which has the number is \textbf{less or equal} than~$k$.
-					\item Connect each output unit with number $k$ with the previous layer units which has the number is \textbf{less} than $k$.
-				\end{itemize}
-			\end{block}
-		\end{minipage}%
-		\begin{minipage}[t]{0.33\columnwidth}
-			\vspace{2cm}
-			\begin{figure}
-				\centering
-				\includegraphics[width=1.0\linewidth]{figs/made2}
-			\end{figure}
-		\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
-\end{frame}
-%=======
-\begin{frame}{MADE}
-	\begin{block}{Possible variations}
-		\begin{itemize}
-			\item Order agnostic training (missing values in partially observed input vectors can be imputed efficiently);
-			\item Connectivity-agnostic training (cheap ensembling).
-		\end{itemize}
-	\end{block}
-	\vspace{-0.3cm}
-	\begin{minipage}[t]{0.59\columnwidth}
-		\begin{figure}
-			  \includegraphics[width=\linewidth]{figs/made_nmasks}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.41\columnwidth}
-		\begin{figure}
-	  		\includegraphics[width=\linewidth]{figs/made_results}
-		\end{figure}
-	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
 \end{frame}
 %=======
 \begin{frame}{Summary}
