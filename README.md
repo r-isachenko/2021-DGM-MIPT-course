@@ -1,13 +1,14 @@
-# 2021-DGM-MIPT-course
+# Deep Generative Models course, MIPT, 2021
 
-The course is devoted to modern generative models in the application to computer vision. 
+## Description
+The course is devoted to modern generative models (mostly in the application to computer vision). 
 
-We will study 4 main classes of generative models: 
+We will study the following types of generative models: 
 - autoregressive models, 
 - latent variable models, 
 - normalization flow models, 
 - adversarial models,
-- diffusion models
+- diffusion models.
 
 Special attention is paid to the properties of various classes of generative models, their interrelationships, theoretical prerequisites and methods of quality assessment.
 
@@ -15,11 +16,11 @@ The aim of the course is to introduce the student to widely used advanced method
 
 The course is accompanied by practical tasks that allow you to understand the principles of the considered models.
 
-## Course materials
+## Materials
 
 | Lecture | Date | Description | Lecture | Video |
 |---------|------|-------------|---------|-------| 
-| 0 | September, 8 | Intro | [slides](lectures/intro.pdf) |  |
+| 0 | September, 8 | Intro. | [slides](lectures/intro.pdf) |  |
 | 1 | September, 8 | Logistics. Motivation. Divergence minimization framework. Autoregressive modelling. | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | [video](https://youtu.be/JfRkHnVtzeg) |
 | 2 | September, 15 | Bayesian Framework. Latent Variable Models. Variational lower bound. EM-algorithm. | TBA | TBA | 
 | 3 | September, 22 | ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | TBA | TBA | 
@@ -38,3 +39,9 @@ The course is accompanied by practical tasks that allow you to understand the pr
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
+
+## Author
+
+**telegram:** @roman_isachenko
+
+**e-mail:** roman.isachenko@phystech.edu
