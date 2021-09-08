@@ -40,6 +40,12 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
 
+## Game rules
+- 6 homeworks each of 13 points = **78 points**
+- oral cozy exam = **26 points**
+- maximum points: 78 + 26 = **104 points**
+### Final grade: `floor(relu(#points/8 - 2))`
+
 ## Previous episodes
 - [OzonMasters, spring 2021](https://github.com/r-isachenko/2021-DGM-Ozon-course)
 - [MIPT, autumn 2020](https://github.com/r-isachenko/2020-DGM-MIPT-course)
