@@ -3,9 +3,123 @@
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
-\begin{frame}
+\begin{frame}[noframenumbering,plain]
 %\thispagestyle{empty}
 \titlepage
+\end{frame}
+%=======
+\begin{frame}{Variational lower bound}
+	\begin{multline*}
+		\log p(\bx| \btheta) 
+		= \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)} = \\ 
+		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)}d\bz
+		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta) q(\bz)}{p(\bz|\bx, \btheta) q(\bz)} d\bz = \\
+		= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz + \int q(\bz) \log \frac{q(\bz)}{p(\bz|\bx, \btheta)}d\bz = \\ 
+		= \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+	\end{multline*}
+	\vspace{-0.5cm}
+	\begin{block}{Kullback-Leibler divergence}
+	    \begin{itemize}
+	    	\item $KL(q || p) = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d \bz$;
+	        \item $KL(q || p) \geq 0$;
+	        \item $KL(q || p) = 0 \Leftrightarrow q \equiv p$.
+	    \end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Variational lower bound}
+\[
+    \log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+\]
+\begin{block}{Evidence Lower Bound (ELBO)}
+\begin{align*}
+    \mathcal{L} (q, \btheta) &= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz = \\ 
+    &= \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz \\ 
+    &= \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz))
+\end{align*}
+\end{block}
+Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
+\[
+    \max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
+\]
+    
+\end{frame}
+%=======
+\begin{frame}{EM-algorithm}
+	\[
+		\mathcal{L} (q, \btheta)  = \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz.
+	\]
+	\begin{block}{Block-coordinate optimization}
+	\begin{itemize}
+		\item Initialize $\btheta^*$;
+		\item E-step
+		\[
+			q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+			 p(\bz| \bx, \btheta^*);
+		\]
+		\item M-step
+		\[
+			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
+		\]
+		\item Repeat E-step and M-step until convergence.
+	\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Ugly pic}
+\end{frame}
+%=======
+\begin{frame}{Amortized variational inference}
+    \begin{block}{E-step}
+    \vspace{-0.3cm}
+    \[
+		q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+		 p(\bz| \bx, \btheta^*).
+	\]
+	\begin{itemize}
+		\item $p(\bz| \bx, \btheta^*)$ could be \textbf{intractable};
+		\item $q(\bz)$ is different for each object $\bx$.
+	\end{itemize}
+    \end{block}
+	\begin{block}{Idea}
+	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class $q(\bz|\bx, \bphi)$ conditioned on samples $\bx$ with parameters $\bphi$.
+	\end{block}
+	
+	\textbf{Variational Bayes}
+	\begin{itemize}
+		\item E-step
+		\[
+		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}}
+		\]
+		\item M-step
+		\[
+		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}}
+		\]
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Variational EM-algorithm}
+
+	\begin{block}{ELBO}
+		\vspace{-0.1cm}
+		\[
+		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\]
+	\end{block}
+	\begin{itemize}
+		\item E-step
+		\[
+		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}},
+		\]
+		where $\bphi$~-- parameters of variational distribution $q(\bz | \bx, \bphi)$.
+		\item M-step
+		\[
+		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
+		\]
+		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
+	\end{itemize}
+	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
+	\textbf{Difficulty:} number of samples $n$.
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
@@ -416,6 +530,10 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
+		\vfill
+		\item ELBO maximization is performed by the general variational EM algorithm.
+		\vfill
 		\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and to use deep neural networks for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz, \btheta)$.
 		\vfill
 		\item ELBO gradients are computed using Monte-Carlo estimation.

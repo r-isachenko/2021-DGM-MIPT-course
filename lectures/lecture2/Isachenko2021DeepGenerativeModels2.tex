@@ -1,11 +1,107 @@
 \input{../utils/preamble}
 \createdgmtitle{2}
+
+\usepackage{tikz}
+
+\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-%\thispagestyle{empty}
-\titlepage
+	%\thispagestyle{empty}
+	\titlepage
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from unknown distribution $\pi(\bx)$.
+
+	\begin{block}{Goal}
+		We would like to learn a distribution $\pi(\bx)$ for 
+		\begin{itemize}
+		    \item evaluating $\pi(\bx)$ for new samples (how likely to get object $\bx$?);
+		    \item sampling from $\pi(\bx)$ (to get new objects $\bx \sim \pi(\bx)$).
+		\end{itemize}
+	\end{block}
+	Instead of searching true $\pi(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	\begin{block}{Divergence}
+		\begin{itemize}
+			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cS$;
+			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
+		\end{itemize}
+	\end{block}
+	\begin{block}{General divergence minimization task}
+		\vspace{-0.3cm}
+		\[
+		\min_{\btheta} D(\pi || p).
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Forward KL}
+		\vspace{-0.2cm}
+		\[
+		KL(\pi || p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+	\begin{block}{Reverse KL}
+		\vspace{-0.2cm}
+		\[
+		KL(p || \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+	
+	\begin{block}{Maximum likelihood estimation (MLE)}
+		\vspace{-0.5cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+		\]
+		\vspace{-0.1cm}
+	\end{block}
+	Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimate of forward KL.
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Likelihood as product of conditionals}
+		Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:i} = (x_1, \dots, x_i)$. Then 
+		\[
+		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta); \quad 
+		\log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
+		\]
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{MLE problem for autoregressive model}
+		\vspace{-0.5cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}\btheta).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Sampling}
+		\vspace{-0.5cm}
+		\[
+			\hat{x}_1 \sim p(x_1 | \btheta), \quad \hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta), \dots, \quad \hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)
+		\]
+		New generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Autoregressive MLP}
+		\vspace{-0.3cm}
+ 		\begin{figure}
+		     \centering
+		     \includegraphics[width=0.75\linewidth]{figs/sequential_MLP}
+		 \end{figure}
+	\end{block}
+	\begin{block}{Autoregressive RNN}
+	   	\vspace{-0.3cm}
+		\begin{figure}
+		   \centering
+		   \includegraphics[width=0.75\linewidth]{figs/sequential_RNN}
+		\end{figure}
+	\end{block}
+	 \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 \end{frame}
 %=======
 \begin{frame}{Char RNN}
@@ -185,6 +281,7 @@
 %=======
 \begin{frame}{PixelCNN}
 	\begin{block}{CIFAR-10 generated samples}
+		\vspace{-0.2cm}
 		\begin{figure}
 			\centering
 	  		\includegraphics[width=0.7\linewidth]{figs/pixelcnn_results}
@@ -256,59 +353,47 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from unknown distribution $\pi(\bx)$.
-	\begin{block}{Goal}
-		We would like to learn a distribution $\pi(\bx)$ for 
-		\begin{itemize}
-			\item evaluating $\pi(\bx)$ for new samples (how likely to get object $\bx$?);
-			\item sampling from $\pi(\bx)$ (to get new objects $\bx \sim \pi(\bx)$).
-		\end{itemize}
-	\end{block}
-	\begin{block}{Challenge}
-		Data is complex and high-dimensional.
-	\end{block}
-	\begin{block}{MLE problem}
-	Fix probabilistic model $p(\bx | \btheta)$~-- a set of parameterized distributions, such that $p(\bx | \btheta) \approx \pi(\bx)$.
-	
-		\vspace{-0.3cm}
-		\[
-		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-		\]
-		\vspace{-0.1cm}
-	\end{block}
-\end{frame}
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Likelihood as product of conditionals}
-		Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:i} = (x_1, \dots, x_i)$. Then 
-		\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta); \quad 
-		\log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
-		\]
-	\end{block}
-	\vspace{-0.3cm}
-	\begin{block}{MLE problem for autoregressive model}
-		\vspace{-0.5cm}
-		\[
-		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}\btheta).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Sampling}
-		\vspace{-0.5cm}
-		\[
-			\hat{x}_1 \sim p(x_1 | \btheta), \quad \hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta), \dots, \quad \hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)
-		\]
-		New generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
-	\end{block}
-\end{frame}
-%=======
 \begin{frame}{Generative models zoo}
-    \begin{figure}
-        \centering
-        \includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
-        \label{fig:generative_models_zoo}
-    \end{figure}
+	\begin{tikzpicture}[
+	 	basic/.style  = {draw, text width=2cm, drop shadow, rectangle},
+	 	root/.style   = {basic, rounded corners=2pt, thin, text height=1.1em, text width=7em, align=center, fill=blue!40},
+	 	level 1/.style={sibling distance=55mm},
+	 	level 2/.style = {basic, rounded corners=6pt, thin, align=center, fill=blue!20, text height=1.1em, text width=9em, sibling distance=38mm},
+	 	level 3/.style = {basic, rounded corners=6pt, thin,align=center, fill=blue!20, text width=8.5em},
+	 	level 4/.style = {basic, thin, align=left, fill=pink!30, text width=7em},
+		edge from parent/.style={->,draw},
+		>=latex]
+		
+		% root of the the initial tree, level 1
+		\node[root] {\Large Generative models}
+		% The first level, as children of the initial tree
+		child {node[level 2] (c1) {Likelihood-based}
+			child {node[level 3] (c11) {Tractable density}}
+			child {node[level 3] (c12) {Approximate density}}
+		}
+		child {node[level 2] (c2) {Implicit density}};
+		
+		% The second level, relatively positioned nodes
+		\begin{scope}[every node/.style={level 4}]
+		\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive models};
+		\node [below of = c111] (c112) {Flow models};
+		
+		\node [below of = c12, xshift=10pt] (c121) {VAEs};
+		\node [below of = c121] (c122) {Diffusion models};
+		
+		\node [below of = c2, xshift=10pt] (c21) {GANs};
+		\end{scope}
+		
+		% lines from each level 1 node to every one of its "children"
+		\foreach \value in {1,2}
+		\draw[->] (c11.194) |- (c11\value.west);
+		
+		\foreach \value in {1,2}
+		\draw[->] (c12.194) |- (c12\value.west);
+		
+		\draw[->] (c2.194) |- (c21.west);
+		
+	\end{tikzpicture}
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
@@ -501,129 +586,17 @@
 	
 \end{frame}
 %=======
-\begin{frame}{Variational lower bound}
-	\begin{multline*}
-		\log p(\bx| \btheta) 
-		= \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)} = \\ 
-		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)}d\bz
-		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta) q(\bz)}{p(\bz|\bx, \btheta) q(\bz)} d\bz = \\
-		= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz + \int q(\bz) \log \frac{q(\bz)}{p(\bz|\bx, \btheta)}d\bz = \\ 
-		= \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
-	\end{multline*}
-	\vspace{-0.5cm}
-	\begin{block}{Kullback-Leibler divergence}
-	    \begin{itemize}
-	    	\item $KL(q || p) = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d \bz$;
-	        \item $KL(q || p) \geq 0$;
-	        \item $KL(q || p) = 0 \Leftrightarrow q \equiv p$.
-	    \end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Variational lower bound}
-\[
-    \log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
-\]
-\begin{block}{Evidence Lower Bound (ELBO)}
-\begin{align*}
-    \mathcal{L} (q, \btheta) &= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz = \\ 
-    &= \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz \\ 
-    &= \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz))
-\end{align*}
-\end{block}
-Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
-\[
-    \max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
-\]
-    
-\end{frame}
-%=======
-\begin{frame}{EM-algorithm}
-	\[
-		\mathcal{L} (q, \btheta)  = \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz.
-	\]
-	\begin{block}{Block-coordinate optimization}
-	\begin{itemize}
-		\item Initialize $\btheta^*$;
-		\item E-step
-		\[
-			q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-			 p(\bz| \bx, \btheta^*);
-		\]
-		\item M-step
-		\[
-			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
-		\]
-		\item Repeat E-step and M-step until convergence.
-	\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Ugly pic}
-\end{frame}
-%=======
-\begin{frame}{Amortized variational inference}
-    \begin{block}{E-step}
-    \vspace{-0.3cm}
-    \[
-		q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-		 p(\bz| \bx, \btheta^*).
-	\]
-	\begin{itemize}
-		\item $p(\bz| \bx, \btheta^*)$ could be \textbf{intractable};
-		\item $q(\bz)$ is different for each object $\bx$.
-	\end{itemize}
-    \end{block}
-	\begin{block}{Idea}
-	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class $q(\bz|\bx, \bphi)$ conditioned on samples $\bx$ with parameters $\bphi$.
-	\end{block}
-	
-	\textbf{Variational Bayes}
-	\begin{itemize}
-		\item E-step
-		\[
-		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}}
-		\]
-		\item M-step
-		\[
-		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}}
-		\]
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Variational EM-algorithm}
-
-	\begin{block}{ELBO}
-		\vspace{-0.1cm}
-		\[
-		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
-		\]
-	\end{block}
-	\begin{itemize}
-		\item E-step
-		\[
-		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}},
-		\]
-		where $\bphi$~-- parameters of variational distribution $q(\bz | \bx, \bphi)$.
-		\item M-step
-		\[
-		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
-		\]
-		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
-	\end{itemize}
-	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
-	\textbf{Difficulty:} number of samples $n$.
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item MADE model is an autoregressive autoencoder with masked dense layers.
+		\vfill
+		\item WaveNet and PixelCNN models use masked causal convolutions (1D or 2D) to get autoregressize model.
+		\vfill
+		\item PixelCNN++ proposes to use discretized mixture of logistics for output distribution.
+		\vfill
 		\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
 		\vfill
 		\item LVM introduce latent representation of observed samples to make model more interpretable.
-		\vfill
-		\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
-		\vfill
-		\item ELBO maximization is performed by the general variational EM algorithm.
 	\end{itemize}
 \end{frame}
 \end{document} 
