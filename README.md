@@ -22,8 +22,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 |---------|------|-------------|---------|-------| 
 | 0 | September, 8 | Intro. | [slides](lectures/intro.pdf) |  |
 | 1 | September, 8 | Logistics. Motivation. Divergence minimization framework. Autoregressive modelling. | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | [video](https://youtu.be/JfRkHnVtzeg) |
-| 2 | September, 15 | Bayesian Framework. Latent Variable Models. Variational lower bound. EM-algorithm. | TBA | TBA | 
-| 3 | September, 22 | ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | TBA | TBA | 
+| 2 | September, 15 | Autoregressive models (MADE, WaveNet, PixelCNN, PixelCNN++). Bayesian Framework. Latent Variable Models. Variational lower bound. | [slides](lectures/lecture2/Isachenko2021DeepGenerativeModels2.pdf) | TBA | 
+| 3 | September, 22 | EM-algorithm. ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | TBA | TBA | 
 | 4 | September, 29 | Mean-field approximation and EM-algorithm. Flow models definition. Forward and reverse KL divergence. | TBA | TBA | 
 | 5 | October, 6 | Flow models (Planar flows, NICE, RealNVP, Glow). Flows in variational inference. | TBA | TBA | 
 | 6 | October, 13 | Autoregressive flows (MAF, IAF). Flow KL duality. Uniform dequantization. | TBA | TBA |  
@@ -39,6 +39,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
+| 1 | September, 15 | September, 26 | Theory: divergences + autoregressive models. Practice: MADE on 2D and MNIST. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw1.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw1.ipynb)|
+
 
 ## Game rules
 - 6 homeworks each of 13 points = **78 points**
