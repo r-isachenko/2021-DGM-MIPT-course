@@ -138,7 +138,7 @@
 %=======
 \begin{frame}{MADE}
 	\begin{itemize}
-		\item Vanila autoencoder is not a generative model. Why?
+		\item Vanila autoencoder is not a generative model.
 		\item Let mask the weight matrices to make the model generative: $\bW_M = \bW \cdot \bM$.
 		\begin{figure}
 		    \centering
@@ -231,7 +231,7 @@
 %=======
 \begin{frame}{PixelCNN}
 	\begin{block}{Goal}
-		Model a distribution of natural images.
+		Model a distribution $\pi(\bx)$ of natural images.
 	\end{block}
 	\begin{block}{Solution}
 		Autoregressive model on 2D pixels
@@ -307,7 +307,7 @@
 	\begin{itemize}
 		\item Standard PixelCNN outputs softmax probabilities for values $\{0, 255\}$ (256 outputs feature maps). 
 		\item Categorical distribution do not know anything about numerical relationships (220 is close to 221 and far from 15).
-		\item If pixel value is not presented in the training dataset , it won't be predicted.
+		\item If pixel value is not presented in the training dataset, it won't be predicted.
 		\item (Look at the edges of the distributions: they have higher probability mass).
 	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
@@ -317,8 +317,8 @@
 		\begin{minipage}[t]{0.55\columnwidth}
 		\begin{block}{Mixture of logistic distributions}
 			\begin{align*}
-				p(\nu | \mu, s) &= \frac{\exp^{-(\nu - \mu) / s}}{s (1 + \exp^{-(\nu - \mu) / s})^2}; \\
-				p(\nu | \bmu, \bs, \bpi) &= \sum_{i=1}^K \pi_k p(\nu | \mu_k, s_k);
+				p(x | \mu, s) &= \frac{\exp^{-(x - \mu) / s}}{s (1 + \exp^{-(x - \mu) / s})^2}; \\
+				p(x | \bmu, \bs, \bpi) &= \sum_{i=1}^K \pi_k p(x | \mu_k, s_k);
 			\end{align*}
 		\end{block}
 		\end{minipage}%
@@ -329,7 +329,7 @@
 		\end{minipage}
 	To adopt probability calculation to discrete values:
 	\[
-		P(x | \bmu, \bs, \bpi) = P(x + 0.5 | \bmu, \bs, \bpi) - P(x - 0.5 | \bmu, \bs, \bpi)
+		P_d(x | \bmu, \bs, \bpi) = P(x + 0.5 | \bmu, \bs, \bpi) - P(x - 0.5 | \bmu, \bs, \bpi)
 	\]
 	For the edge case of 0, replace $x - 0.5$ by $-\infty$, and for 255 replace $x + 0.5$ by $+\infty$.
 	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
@@ -410,7 +410,7 @@
 	\end{block}
 	\begin{block}{Meaning}
 		We have unobserved variables $\bt$ and some prior knowledge about them $p(\bt)$. Then, the data $\bx$ has been observed. 
-		Posterior distribution $p(\bt | \bx)$ summarizes the knoweldge after the obbservations.
+		Posterior distribution $p(\bt | \bx)$ summarizes the knowledge after the observations.
 	\end{block}
 \end{frame}
 %=======
@@ -474,7 +474,8 @@
 			\begin{cases}
 				+\infty, \quad x = 0; \\
 				0, \quad x \neq 0;
-			\end{cases} \quad 
+			\end{cases} \, 
+			\int \delta(x) dx = 1; \,\, 
 			\int f(x) \delta (x - y) dx = f(y).
 		\]
 	\end{block}
