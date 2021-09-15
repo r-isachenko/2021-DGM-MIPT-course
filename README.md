@@ -22,8 +22,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 |---------|------|-------------|---------|-------| 
 | 0 | September, 8 | Intro. | [slides](lectures/intro.pdf) |  |
 | 1 | September, 8 | Logistics. Motivation. Divergence minimization framework. Autoregressive modelling. | [slides](lectures/lecture1/Isachenko2021DeepGenerativeModels1.pdf) | [video](https://youtu.be/JfRkHnVtzeg) |
-| 2 | September, 15 | Autoregressive models (MADE, WaveNet, PixelCNN, PixelCNN++). Bayesian Framework. Latent Variable Models. Variational lower bound. | [slides](lectures/lecture2/Isachenko2021DeepGenerativeModels2.pdf) | TBA | 
-| 3 | September, 22 | EM-algorithm. ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | TBA | TBA | 
+| 2 | September, 15 | Autoregressive models (MADE, WaveNet, PixelCNN, PixelCNN++). Bayesian Framework. | [slides](lectures/lecture2/Isachenko2021DeepGenerativeModels2.pdf) | [video](https://youtu.be/P2XTaPLUh2w) | 
+| 3 | September, 22 | Latent Variable Models. Variational lower bound. EM-algorithm. ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | TBA | TBA | 
 | 4 | September, 29 | Mean-field approximation and EM-algorithm. Flow models definition. Forward and reverse KL divergence. | TBA | TBA | 
 | 5 | October, 6 | Flow models (Planar flows, NICE, RealNVP, Glow). Flows in variational inference. | TBA | TBA | 
 | 6 | October, 13 | Autoregressive flows (MAF, IAF). Flow KL duality. Uniform dequantization. | TBA | TBA |  
