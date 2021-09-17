@@ -63,10 +63,10 @@
 %=======
 \begin{frame}{Recap of previous lecture}
 	\begin{block}{Likelihood as product of conditionals}
-		Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:i} = (x_1, \dots, x_i)$. Then 
+		Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$. Then 
 		\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta); \quad 
-		\log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
+		p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta); \quad 
+		\log p(\bx | \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta).
 		\]
 	\end{block}
 	\vspace{-0.3cm}
@@ -236,7 +236,7 @@
 	\begin{block}{Solution}
 		Autoregressive model on 2D pixels
 		\[
-		    p(\bx | \btheta) = \prod_{i=1}^{\text{width} \times \text{height}} p(x_i|\bx_{1:i-1}, \btheta).
+		    p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j|\bx_{1:j-1}, \btheta).
 		\]
 		\begin{itemize}
 			\item We need to introduce the ordering of image pixels.
@@ -318,7 +318,7 @@
 		\begin{block}{Mixture of logistic distributions}
 			\begin{align*}
 				p(x | \mu, s) &= \frac{\exp^{-(x - \mu) / s}}{s (1 + \exp^{-(x - \mu) / s})^2}; \\
-				p(x | \bmu, \bs, \bpi) &= \sum_{i=1}^K \pi_k p(x | \mu_k, s_k);
+				p(x | \bmu, \bs, \bpi) &= \sum_{k=1}^K \pi_k p(x | \mu_k, s_k);
 			\end{align*}
 		\end{block}
 		\end{minipage}%

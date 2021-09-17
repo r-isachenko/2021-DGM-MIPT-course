@@ -298,10 +298,10 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
         \item We have to efficiently compute $\log p(\bx | \btheta)$ and $\frac{\partial \log p(\bx | \btheta)}{\partial \btheta}$.
     \end{itemize}
     \begin{block}{Likelihood as product of conditionals}
-    Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:i} = (x_1, \dots, x_i)$. Then 
+    Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$. Then 
     \[
-        p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta); \quad 
-        \log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
+        p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta); \quad 
+        \log p(\bx | \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta).
     \]
     \end{block}
 	\textbf{Example:} $p(x_1, x_2, x_3) = p(x_2) \cdot p(x_1 | x_2) \cdot p(x_3 | x_1, x_2)$.
@@ -309,7 +309,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 %=======
 \begin{frame}{Autoregressive models}
     \[
-    \log p(\bx| \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta)
+    \log p(\bx| \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)
     \]
     \begin{itemize}
 	    \item Sampling is sequential:
@@ -320,18 +320,18 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
     		\item sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
     		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
     	\end{itemize}
-        \item Each conditional $p(x_i | \bx_{1:i - 1}, \btheta)$ could be modelled by neural network.
+        \item Each conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ could be modelled by neural network.
         \item Modelling all conditional distributions separately is infeasible and we would obtain separate models. To extend to high dimensions we could share parameters $\btheta$ across conditionals.
 
     \end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive models}
-		For large $i$ the conditional distribution $p(x_i | \bx_{1:i - 1}, \btheta)$ could be infeasible. Moreover, the history $\bx_{1:i-1}$ has non-fixed length.
+		For large $j$ the conditional distribution $p(x_j | \bx_{1:j - 1}, \btheta)$ could be infeasible. Moreover, the history $\bx_{1:j-1}$ has non-fixed length.
 		\begin{block}{Markov assumption}
 			\vspace{-0.5cm}
 			\[
-				p(x_i | \bx_{1:i - 1}, \btheta) = p(x_i | \bx_{i - d:i - 1}, \btheta), \quad d \text{ is a fixed model parameter}.
+				p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta), \quad d \text{ is a fixed model parameter}.
 			\]
 		\end{block}
 		\vspace{-0.5cm}
@@ -340,10 +340,10 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 				{\small
 				\begin{itemize}
 					\item $d = 2$;
-					\item $x_i \in \{0, 255\}$;
-					\item $\bh_i = \text{MLP}_{\btheta}(x_{i - 1}, x_{i - 2})$;
-					\item $\bpi_i = \text{softmax}(\bh_i)$;
-					\item $p(x_i | x_{i - 1}, x_{i - 2}, \btheta) = \text{Categorical}(\bpi_i)$.
+					\item $x_j \in \{0, 255\}$;
+					\item $\bh_j = \text{MLP}_{\btheta}(x_{j - 1}, x_{j - 2})$;
+					\item $\bpi_j = \text{softmax}(\bh_j)$;
+					\item $p(x_j | x_{j - 1}, x_{j - 2}, \btheta) = \text{Categorical}(\bpi_j)$.
 				\end{itemize}
 				}
 			\end{minipage}%
@@ -362,13 +362,13 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 		\item Previous model has \textbf{limited} memory $d$. It is insufficient for many modalities (e.g. for images and text). 
 		\item Recurrent NN fixes this problem and potentially could learn long-range dependencies:
 		\[
-			p(x_i | \bx_{1:i - 1}, \btheta) = p(x_i | \bh_i, \btheta), \quad \bh_i = \text{RNN}(\bx_{i - 1}, \bh_{i - 1})
+			p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bh_j, \btheta), \quad \bh_j = \text{RNN}(\bx_{j - 1}, \bh_{j - 1})
 		\]
 		 \begin{figure}
 	    \centering
 	    \includegraphics[width=0.7\linewidth]{figs/sequential_RNN}
 		 \end{figure}
-		\item Sequential computation of all conditionals $p(x_i | \bx_{1:i-1}, \btheta)$, hence, the training is slow.
+		\item Sequential computation of all conditionals $p(x_j | \bx_{1:j-1}, \btheta)$, hence, the training is slow.
 		\item RNN suffers from vanishing and exploding gradients.
 	\end{itemize}
 	 \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
@@ -389,7 +389,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
         \item Density estimation:
         \vspace{-0.2cm}
         \[
-            p(\bx) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}).
+            p(\bx) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}).
         \]
         \vspace{-0.2cm}
         \item Autoregressive models work on both continuous and discrete data.
