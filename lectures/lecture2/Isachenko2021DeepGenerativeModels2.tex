@@ -486,107 +486,6 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Latent variable models (LVM)}
-    \begin{block}{MLE problem}
-    \vspace{-0.5cm}
-    \[
-        \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-    \]
-    \vspace{-0.5cm}
-    \end{block}
-    \begin{block}{Challenge}
-    $p(\bx | \btheta)$ could be intractable.
-    \end{block}
-    \begin{block}{Extend probabilistic model}
-    Introduce latent variable $\bz$ for each sample $\bx$
-    \[
-        p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
-        \log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
-    \]
-    \[
-        p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
-    \]
-    \end{block}
-	\vspace{-0.3cm}
-	\begin{block}{Motivation}
-		The distributions $p(\bx | \bz, \btheta)$ and $p(\bz)$ could be quite simple.
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Latent variable models (LVM)}
-    \[
-    \log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
-    \]
-    \vspace{-0.6cm}
-    \begin{block}{Examples}
-    \begin{minipage}[t]{0.45\columnwidth}
-		\textit{Mixture of gaussians} \\
-		\vspace{-0.5cm}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.75\linewidth]{figs/mixture_of_gaussians.png}
-		\end{figure}
-		\vspace{-0.5cm}
-	    \begin{itemize}
-	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \boldsymbol{\mu}_\bz, \boldsymbol{\Sigma}_\bz)$
-	        \item $p(\bz) = \text{Categorical}(\bz | \boldsymbol{\pi})$
-	    \end{itemize}
-	\end{minipage}%
-	\begin{minipage}[t]{0.53\columnwidth}
-		\textit{PCA model} \\
-		\vspace{-0.5cm}
-		\begin{figure}
-			\centering
-			\includegraphics[width=.7\linewidth]{figs/pca.png}
-		\end{figure}
-		\vspace{-0.5cm}
-		\begin{itemize}
-	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}_\bz)$
-	        \item $p(\bz) = \mathcal{N}(\bz | 0, \mathbf{I})$
-	    \end{itemize}
-	\end{minipage}
-	\end{block}
-\myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
-\end{frame}
-%=======
-\begin{frame}{Latent variable models (LVM)}
-    \[
-    \log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
-    \]
-	\textbf{PCA goal:} Project original data $\bX$ onto a low dimensional latent space while maximizing the variance of the projected data. 
-	\begin{figure}
-		\centering
-		\includegraphics[width=.7\linewidth]{figs/bayesian_pca.png}
-	\end{figure}
-	\vspace{-0.5cm}
-	\begin{itemize}
-        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}_\bz)$
-        \item $p(\bz) = \mathcal{N}(\bz | 0, \mathbf{I})$
-    \end{itemize}
-    
-    \myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
-    
-\end{frame}
-%=======
-\begin{frame}{Incomplete likelihood}
-        \begin{block}{MLE}
-            \vspace{-0.7cm}
-            \begin{multline*}
-                \vspace{-0.5cm}
-                \btheta^* = \argmax_{\btheta} p(\bX, \bZ | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i, \bz_i | \btheta) = \\ = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i, \bz_i | \btheta).
-            \end{multline*}
-            \vspace{-0.5cm}
-        \end{block}
-	Since $\bZ$ is unknown, maximize \textbf{incomplete likelihood}.
-    \begin{block}{MILE problem}
-        \vspace{-0.7cm}
-    	\begin{multline*}
-        	\btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) = \\ =  \argmax_{\btheta}  \sum_{i=1}^n \log \int p(\bx_i, \bz_i | \btheta) d \bz_i = \\ = \argmax_{\btheta} \log \sum_{i=1}^n \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i.
-    	\end{multline*}
-	\end{block}
-	
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item MADE model is an autoregressive autoencoder with masked dense layers.
@@ -596,8 +495,6 @@
 		\item PixelCNN++ proposes to use discretized mixture of logistics for output distribution.
 		\vfill
 		\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
-		\vfill
-		\item LVM introduce latent representation of observed samples to make model more interpretable.
 	\end{itemize}
 \end{frame}
 \end{document} 

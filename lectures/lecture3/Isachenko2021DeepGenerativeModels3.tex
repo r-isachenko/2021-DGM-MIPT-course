@@ -8,22 +8,192 @@
 \titlepage
 \end{frame}
 %=======
-\begin{frame}{Variational lower bound}
-	\begin{multline*}
-		\log p(\bx| \btheta) 
-		= \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)} = \\ 
-		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)}d\bz
-		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta) q(\bz)}{p(\bz|\bx, \btheta) q(\bz)} d\bz = \\
-		= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz + \int q(\bz) \log \frac{q(\bz)}{p(\bz|\bx, \btheta)}d\bz = \\ 
-		= \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
-	\end{multline*}
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{MLE problem for autoregressive model}
+		\vspace{-0.7cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}\btheta).
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Sampling}
+		\vspace{-0.5cm}
+		\[
+			\hat{x}_1 \sim p(x_1 | \btheta), \quad \hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta), \dots, \quad \hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)
+		\]
+		New generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
+	\end{block}
+	Masking helps to make neural network autoregressive.
+	\begin{itemize}
+		\item \textbf{MADE} - masked autoencoder (MLP).
+		\item \textbf{WaveNet} - masked 1D convolutions.
+		\item \textbf{PixelCNN} - masked 2D convolutions.
+	\end{itemize}
+	\textbf{PixelCNN++} uses discretized mixture of logistic distribution to make the output distribution more natural.
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Posterior distribution}
+		\[
+		p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{Bayesian inference}
+		\vspace{-0.2cm}
+		\[
+		p(\bx | \bX) = \int p(\bx | \btheta) p(\btheta | \bX) d \btheta
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{Maximum a posteriori (MAP) estimation}
+		\vspace{-0.2cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{MAP inference}
+		\[
+		p(\bx | \bX) = \int p(\bx| \btheta) p(\btheta | \bX ) d \btheta \approx p(\bx | \btheta^*).
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Latent variable models (LVM)}
+	\begin{block}{MLE problem}
+		\vspace{-0.5cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	The distribution $p(\bx | \btheta)$ could be very complex and intractable (as well as real distribution $\pi(\bx)$).
+	\begin{block}{Extended probabilistic model}
+		Introduce latent variable $\bz$ for each sample $\bx$
+		\[
+		p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
+		\log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
+		\]
+		\[
+		p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
+		\]
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Motivation}
+		The distributions $p(\bx | \bz, \btheta)$ and $p(\bz)$ could be quite simple.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Latent variable models (LVM)}
+	\[
+	\log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
+	\]
+	\vspace{-0.6cm}
+	\begin{block}{Examples}
+		\begin{minipage}[t]{0.45\columnwidth}
+			\textit{Mixture of gaussians} \\
+			\vspace{-0.5cm}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.75\linewidth]{figs/mixture_of_gaussians}
+			\end{figure}
+			\vspace{-0.5cm}
+			\begin{itemize}
+				\item $p(\bx | z, \btheta) = \cN(\bx | \bmu_z, \bSigma_z)$
+				\item $p(z) = \text{Categorical}(\bpi)$
+			\end{itemize}
+		\end{minipage}%
+		\begin{minipage}[t]{0.53\columnwidth}
+			\textit{PCA model} \\
+			\vspace{-0.5cm}
+			\begin{figure}
+				\centering
+				\includegraphics[width=.7\linewidth]{figs/pca}
+			\end{figure}
+			\vspace{-0.3cm}
+			\begin{itemize}
+				\item $p(\bx | \bz, \btheta) = \cN(\bx | \bW \bz + \bmu, \sigma^2 \bI)$
+				\item $p(\bz) = \cN(\bz | 0, \bI)$
+			\end{itemize}
+		\end{minipage}
+	\end{block}
+	\myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
+\end{frame}
+%=======
+\begin{frame}{Latent variable models (LVM)}
+	\[
+	\log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
+	\]
+	\textbf{PCA} projects original data $\bX$ onto a low dimensional latent space while maximizing the variance of the projected data. 
+	\begin{figure}
+		\centering
+		\includegraphics[width=.7\linewidth]{figs/bayesian_pca}
+	\end{figure}
 	\vspace{-0.5cm}
-	\begin{block}{Kullback-Leibler divergence}
-	    \begin{itemize}
-	    	\item $KL(q || p) = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d \bz$;
-	        \item $KL(q || p) \geq 0$;
-	        \item $KL(q || p) = 0 \Leftrightarrow q \equiv p$.
-	    \end{itemize}
+	\begin{itemize}
+		\item $p(\bx | \bz, \btheta) = \cN(\bx | \bW \bz + \bmu, \sigma^2 \bI)$
+		\item $p(\bz) = \cN(\bz | 0, \bI)$
+		\item $p(\bx) = \cN(\bx | \bmu, \bW \bW^T + \sigma^2 \bI)$
+		\item $p(\bz | \bx) = \cN \bigl(\bM^{-1} \bW^T (\bx - \bmu), \sigma^2 \bM\bigr)$, where $\bM = \bW \bW^T + \sigma^2 \bI$
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Maximum likelihood estimation for LVM}
+	\begin{block}{MLE for extended problem}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\vspace{-0.5cm}
+			\btheta^* = \argmax_{\btheta} p(\bX, \bZ | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i, \bz_i | \btheta) = \\ = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i, \bz_i | \btheta).
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+	However, $\bZ$ is unknown.
+	\begin{block}{MLE for original problem}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) = \\ =  \argmax_{\btheta}  \sum_{i=1}^n \log \int p(\bx_i, \bz_i | \btheta) d \bz_i = \\ = \argmax_{\btheta} \log \sum_{i=1}^n \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i.
+		\end{multline*}
+	\end{block}
+	
+\end{frame}
+%=======
+\begin{frame}{???}
+	\begin{figure}
+		\centering
+		\includegraphics[width=.9\linewidth]{figs/lvm_diagram}
+	\end{figure}
+	\begin{block}{Naive approach: Monte-Carlo estimation}
+		\[
+			p(\bx | \btheta) = \int p(\bx | \bz, \btheta) p(\bz) d\bz = \bbE_{p(\bz)} p(\bx | \bz, \btheta) \approx \frac{1}{K} \sum_{k=1}^{K} p(\bx | \bz_k, \btheta)
+		\]
+	\end{block}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/4/4\_VAE.html}{image credit: https://jmtomczak.github.io/blog/4/4\_VAE.html}
+\end{frame}
+%=======
+\begin{frame}{Variational lower bound}
+	\begin{block}{Derivation 1}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\log p(\bx| \btheta) 
+			= \log \int p(\bx, \bz | \btheta) d\bz = \\ 
+			= \log \int \frac{q(\bz)}{q(\bz)} p(\bx, \bz | \btheta) d\bz
+			= \log \bbE_{q} \left[\frac{p(\bx, \bz| \btheta)}{q(\bz)} \right] \geq \\
+			\geq \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)} = \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{q(\bz)} d \bz = \cL(q, \btheta)
+		\end{multline*}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Derivation 2}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\log p(\bx| \btheta) 
+			= \int q(\bz) \log p(\bx| \btheta) d\bz = \\ 
+			= \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)}d\bz
+			= \int q(\bz) \log \frac{p(\bx, \bz| \btheta) q(\bz)}{p(\bz|\bx, \btheta) q(\bz)} d\bz = \\
+			= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz + \int q(\bz) \log \frac{q(\bz)}{p(\bz|\bx, \btheta)}d\bz = \\ 
+			= \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\end{multline*}
+		\vspace{-0.7cm}
 	\end{block}
 \end{frame}
 %=======
@@ -53,10 +223,10 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	\begin{itemize}
 		\item Initialize $\btheta^*$;
 		\item E-step
-		\[
-			q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-			 p(\bz| \bx, \btheta^*);
-		\]
+		\begin{multline*}
+			q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \\
+			= \argmin_q KL(q(\bz) || p(\bz | \bx, \btheta^*)) = p(\bz| \bx, \btheta^*);
+		\end{multline*}
 		\item M-step
 		\[
 			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
@@ -66,7 +236,23 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Ugly pic}
+\begin{frame}{EM illustration}
+	
+	\begin{minipage}[t]{0.45\columnwidth}
+		\begin{figure}
+			\includegraphics[width=0.9\linewidth]{figs/em_bishop1}
+		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.55\columnwidth}
+		\begin{figure}
+			\includegraphics[width=0.85\linewidth]{figs/em_bishop2}
+		\end{figure}
+	\end{minipage}
+	\begin{figure}
+		\includegraphics[width=.55\linewidth]{figs/em_bishop3}
+	\end{figure}
+
+	\myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
 \end{frame}
 %=======
 \begin{frame}{Amortized variational inference}
@@ -99,116 +285,12 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 \end{frame}
 %=======
 \begin{frame}{Variational EM-algorithm}
-
 	\begin{block}{ELBO}
-		\vspace{-0.1cm}
+		\vspace{-0.5cm}
 		\[
-		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+			\log p(\bx| \btheta) = \mathcal{L} (\bphi, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (\bphi, \btheta).
 		\]
-	\end{block}
-	\begin{itemize}
-		\item E-step
-		\[
-		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}},
-		\]
-		where $\bphi$~-- parameters of variational distribution $q(\bz | \bx, \bphi)$.
-		\item M-step
-		\[
-		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
-		\]
-		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
-	\end{itemize}
-	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
-	\textbf{Difficulty:} number of samples $n$.
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-    \begin{block}{MLE problem}
-    \vspace{-0.5cm}
-    \[
-        \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-    \]
-    \vspace{-0.5cm}
-    \end{block}
-    \begin{block}{Challenge}
-    $p(\bx | \btheta)$ could be intractable.
-    \end{block}
-    \begin{block}{LVM}
-    Introduce latent variable $\bz$ for each sample $\bx$
-    \[
-        p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
-        \log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
-    \]
-    \[
-        p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
-    \]
-    \end{block}
-	\vspace{-0.3cm}
-	\begin{block}{Motivation}
-		The distributions $p(\bx | \bz, \btheta)$ and $p(\bz)$ could be quite simple.
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-        \begin{block}{Incomplete likelihood maximization}
-        \vspace{-0.7cm}
-    	\[
-    	        \btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \log \sum_{i=1}^n \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i.
-    	\]
-    	\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Variational lower bound}
-		\[
-		    \log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
-		\]
-	\end{block}
-	\begin{block}{Evidence Lower Bound (ELBO)}
-	    \vspace{-0.3cm}
-		\[
-		    \mathcal{L} (q, \btheta) = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz)).
-		\]
-	\end{block}
-	Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
-	\[
-	    \max_{\btheta} \log p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
-	\]
-	    
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{EM algorithm (block-coordinate optimization)}
-	\begin{itemize}
-		\item Initialize $\btheta^*$;
-		\item E-step
-			\vspace{-0.3cm}
-			\[
-				q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-				 p(\bz| \bx, \btheta^*);
-			\]
-			\vspace{-0.5cm}
-			\begin{itemize}
-				\item $p(\bz| \bx, \btheta^*)$ could be \textbf{intractable};
-				\item $q(\bz)$ is different for each object $\bx$.
-			\end{itemize}
-		\item M-step
-			\[
-				\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
-			\]
-		\item Repeat E-step and M-step until convergence.
-	\end{itemize}
-	\end{block}
-	\begin{block}{Amortized variational inference}
-	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class $q(\bz|\bx, \bphi)$ conditioned on samples $\bx$ with parameters $\bphi$.
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Variational EM-algorithm}
-
-	\begin{block}{ELBO}
-		\vspace{-0.1cm}
-		\[
-		\log p(\bx| \btheta) = \mathcal{L} (\bphi, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (\bphi, \btheta).
-		\]
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
 		\item E-step
@@ -223,9 +305,7 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 		where $\btheta$~-- parameters of the generative distribution $p(\bx | \bz, \btheta)$.
 	\end{itemize}
 	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
-	\begin{block}{Challenge}
-		Number of samples $n$ could be huge (we heed to derive unbiased stochastic gradients).
-	\end{block}
+	\textbf{Challenge:} Number of samples $n$ could be huge (we heed to derive unbiased stochastic gradients).
 \end{frame}
 %=======
 \begin{frame}{ELBO interpretations}
@@ -530,6 +610,8 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item LVM introduce latent representation of observed samples to make model more interpretable.
+		\vfill
 		\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
 		\vfill
 		\item ELBO maximization is performed by the general variational EM algorithm.
