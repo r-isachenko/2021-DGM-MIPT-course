@@ -357,14 +357,15 @@
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-	\vspace{-0.7cm}
+	\vspace{-0.5cm}
 	\begin{multline*}
 		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \nabla_{\bphi}\int q(\bz|\bx, \bphi) \log p(\bx| \bz, \btheta)  d\bz - \nabla_{\bphi} \text{KL}(q(\bz | \bx, \bphi) || p(\bz))
 		\\ = \int r(\bepsilon) \nabla_{\bphi} \log p(\bx | g(\bx, \bepsilon, \bphi), \btheta) d\bepsilon  - \nabla_{\bphi} \text{KL}(q(\bz | \bx, \bphi) || p(\bz))
 		\\ \approx \nabla_{\bphi} \log p(\bx | g(\bx, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} \text{KL}(q(\bz | \bx, \bphi) || p(\bz))
 	\end{multline*}
-	\vspace{-0.7cm}
+	\vspace{-0.5cm}
 	\begin{block}{Variational assumption}
+		\vspace{-0.3cm}
 		\[
 			r(\bepsilon) = \mathcal{N}(0, \bI); \quad  q(\bz| \bx, \bphi) = \mathcal{N} (\bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
 		\]
@@ -382,15 +383,20 @@
 \begin{frame}{Variational autoencoder (VAE)}
 	\begin{block}{Final algorithm}
 		\begin{itemize}
-			\item pick $i \sim U[1, n]$;
-			\item compute a stochastic gradient w.r.t. $\bphi$
-			\begin{multline*}
-				\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) \approx\approx \nabla_{\bphi} \log p(\bx | g(\bx, \bepsilon^*, \bphi), \btheta) \\ - \nabla_{\bphi} \text{KL}(q(\bz | \bx, \bphi) || p(\bz)), \quad \bepsilon^* \sim r(\bepsilon);
-			\end{multline*}
-			\item compute a stochastic gradient w.r.t. $\btheta$
+			\item pick random sample $\bx_i, i \sim U[1, n]$.
+			\item compute the objective:
+			\vspace{-0.3cm}
 			\[
-			\nabla_{\btheta} \mathcal{L} (\bphi, \btheta) \approx \nabla_{\btheta} \log p(\bx|\bz^*, \btheta), \quad \bz^* \sim q(\bz|\bx, \bphi);
+				\bepsilon^* \sim r(\bepsilon); \quad \bz^* = g(\bx, \bepsilon^*, \bphi);
 			\]
+			\[
+				\cL(\bphi, \btheta) \approx  \log p(\bx | \bz^*, \btheta) - KL(q(\bz^* | \bx, \bphi) || p(\bz^*)).
+			\]
+			\item compute a stochastic gradients w.r.t. $\bphi$ and $\btheta$
+			\begin{align*}
+				\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) &\approx \nabla_{\bphi} \log p(\bx | g(\bx, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} \text{KL}(q(\bz | \bx, \bphi) || p(\bz)); \\
+				\nabla_{\btheta} \mathcal{L} (\bphi, \btheta) &\approx \nabla_{\btheta} \log p(\bx|\bz^*, \btheta).
+			\end{align*}
 			\item update $\btheta, \bphi$ according to the selected optimization method (SGD, Adam, RMSProp):
 			\begin{align*}
 				\bphi &:= \bphi + \eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta), \\
