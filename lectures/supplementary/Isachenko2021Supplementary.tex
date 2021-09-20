@@ -96,6 +96,43 @@
 	\end{block}
 \end{frame}
 %=======
+\begin{frame}{ELBO interpretations}
+	\[
+		\log p(\bx | \btheta) = \cL (q, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
+	\]
+	\[
+		\cL (q, \btheta) = \int q(\bz | \bx, \bphi) \log \frac{p(\bx, \bz | \btheta)}{q(\bz | \bx, \bphi)} d \bz.
+	\]
+	\begin{itemize}
+	    \item Evidence minus posterior KL
+	    \vspace{-0.1cm}
+	    \[
+	        \mathcal{L}(q, \btheta) = \log p(\bx | \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
+	    \]
+	    \item Average negative energy plus entropy
+	    \vspace{-0.1cm}
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx, \bz | \btheta) - \log q(\bz | \bx, \bphi)  \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx, \bz | \btheta) + \mathbb{H} \left[q(\bz | \bx, \bphi) \right].
+	    \end{align*}
+	    \item Average reconstruction minus KL to prior
+	    \vspace{-0.1cm}
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[ \log p(\bx | \bz, \btheta) + \log p(\bz) - \log q(\bz | \bx, \bphi) \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx | \bz, \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz)).
+	    \end{align*}
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Variational Autoencoder}
+	Generated images for latent objects $\bz$ sampled from prior $\mathcal{N}(0, \mathbf{I})$
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.5\linewidth]{figs/vae_0.png}
+	\end{figure}
+	\myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
+\end{frame}
+%=======
 \begin{frame}{IWAE, active units, posterior collapse}
 \end{frame}
 %=======
