@@ -40,6 +40,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
 | 1 | September, 15 | September, 26 | Theory: divergences + autoregressive models. Practice: MADE on 2D and MNIST. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw1.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw1.ipynb)|
+| 2 | September, 26 | October, 10 | Theory: log-derivative trick. Practice: PixelCNN on MNIST. VAE on 2D. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw2.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw2.ipynb)|
 
 
 ## Game rules
