@@ -3,7 +3,7 @@
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
-\begin{frame}
+\begin{frame}[noframenumbering,plain]
 %\thispagestyle{empty}
 \titlepage
 \end{frame}
@@ -93,6 +93,242 @@
 	\end{block}
 	\begin{block}{Solution}
 	    Reparametrization trick
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+\end{frame}
+%=======
+\begin{frame}{Bayesian framework}
+	\begin{block}{Bayes theorem}
+		\[
+			p(\bt | \bx) = \frac{p(\bx | \bt) p(\bt)}{p(\bx)} = \frac{p(\bx | \bt) p(\bt)}{\int p(\bx | \bt) p(\bt) d \bt} 
+		\]
+		\begin{itemize}
+			\item $\bx$ -- observed variables, $\bt$ -- unobserved variables (latent variables/parameters);
+			\item $p(\bx | \bt)$ -- likelihood;
+			\item $p(\bx) = \int p(\bx | \bt) p(\bt) d \bt$ -- evidence;
+			\item $p(\bt)$ -- prior distribution, $p(\bt | \bx)$ -- posterior distribution.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Meaning}
+		We have unobserved variables $\bt$ and some prior knowledge about them $p(\bt)$. Then, the data $\bx$ has been observed. 
+		Posterior distribution $p(\bt | \bx)$ summarizes the knowledge after the observations.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Variational Lower Bound}
+    We have set of objects $\bX = \{\bx_i\}_{i=1}^n$. 
+    The goal is to perform Bayesian inference on the unobserved variables $\bT = \{\bt_i\}_{i=1}^n$.
+    \begin{block}{Evidence Lower Bound (ELBO)}
+    \vspace{-0.3cm}
+        \begin{multline*}
+    		\log p(\bX) 
+    		= \log \frac{p(\bX, \bT)}{p(\bT|\bX)} = \\ 
+    		= \int q(\bT) \log \frac{p(\bX, \bT)}{p(\bT|\bX)}d\bT
+    		= \int q(\bT) \log \frac{p(\bX, \bT) q(\bT)}{p(\bT|\bX) q(\bT)} d\bT = \\
+    		= \int q(\bT) \log \frac{p(\bX, \bT)}{q(\bT)}d\bT + \int q(\bT) \log \frac{q(\bT)}{p(\bT|\bX)}d\bT = \\ 
+    		= \mathcal{L} (q) + KL(q(\bT) || p(\bT|\bX)) \geq \mathcal{L} (q).
+    	\end{multline*}
+        \vspace{-0.3cm}
+    \end{block}
+	We would like to maximize lower bound $\mathcal{L}(q)$.
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+    \begin{block}{Independence assumption}
+    \vspace{-0.3cm}
+    \[
+    q(\bT) = \prod_{i=1}^k q_i(\bT_i), \quad \bT = [\bT_1, \dots, \bT_k], \, \bT_j = \{ \bt_{ij}\}_{i=1}^n, \, \bt_i = \{ \bT_{ij}\}_{j=1}^k.
+    \]
+    \vspace{-0.3cm}
+    \end{block}
+    \begin{block}{Block coordinate optimization of ELBO for $q_j(\bT_j)$}
+  
+    {\footnotesize
+    \vspace{-0.3cm}
+        \begin{multline*}
+    		\mathcal{L} (q)
+    		= \int q(\bT) \log \frac{p(\bX, \bT)}{q(\bT)}d\bT
+    		= \int \left[\prod_{i=1}^k q_i(\bT_i) \right] \log \frac{p(\bX, \bT)}{\left[\prod_{i=1}^k q_i(\bT_i) \right]}  \prod_{i=1}^k d \bT_i = \\
+    		= \int \left[ \prod_{i=1}^k q_i \right] \log p(\bX, \bT) \prod_{i=1}^k d \bT_i  
+    		- \sum_{i=1}^k \int \left[ \prod_{j=1}^k q_j \right] \log q_i \prod_{j=1}^k d \bT_j = \\
+    		= \int q_j \left[\int  \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i \right] d \bT_j - \\
+    		- \int q_j \log q_j d\bT_j + \text{const}(q_j) \rightarrow \max_{q_j}
+    	\end{multline*}
+        \vspace{-0.3cm}}
+    \end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+	\footnotesize
+	\begin{block}{Block coordinate optimization of ELBO for $q_j(\bT_j)$}
+		\vspace{-0.4cm}
+	    \begin{multline*}
+			\mathcal{L} (q) 
+			= \int q_j \left[\int \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i \right] d \bT_j
+			- \int q_j \log q_j  d\bT_j + \text{const}(q_j) = \\
+			= \int q_j \log \hat{p}(\bX, \bT_j) d \bT_j 
+			- \int q_j \log q_j d\bT_j + \text{const}(q_j) \rightarrow \max_{q_j}.
+		\end{multline*}
+		Here we introduce
+		\[
+		   \log \hat{p}(\bX, \bT_j) = \int \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}(q_j)
+		\]
+	    \end{block}
+	    \vspace{-0.3cm}
+	    \begin{block}{Final ELBO derivation for $q_j(\bT_j)$}
+	    	\vspace{-0.5cm}
+			\begin{multline*}
+	    		\mathcal{L} (q)
+	    		= \int q_j (\bT_j) \log \hat{p}(\bX, \bT_j) d \bT_j - \int q_j(\bT_j) \log q_j(\bT_j) d\bT_j + \text{const}(q_j) = \\
+	    		 \int q_j (\bT_j) \log \frac{\hat{p}(\bX, \bT_j)}{q_j(\bT_j)} d\bT_j + \text{const}(q_j) = \\
+	    		= - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j)) + \text{const}(q_j) \rightarrow \max_{q_j}.
+	    	\end{multline*}
+	    \end{block}
+\end{frame}
+%=======    
+\begin{frame}{Mean field approximation}   
+	 \begin{block}{Independence assumption}
+		\vspace{-0.3cm}
+		\[
+		q(\bT) = \prod_{i=1}^k q_i(\bT_i), \quad \bT = [\bT_1, \dots, \bT_k], \quad \bT_j = \{ \bt_{ij}\}_{i=1}^n.
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{ELBO}
+	    \[
+			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
+	    \]
+	    \vspace{-0.3cm}
+	\end{block}
+	 \begin{block}{Solution}
+	 	\vspace{-0.3cm}
+		 \[
+		    q_j(\bT_j) = \text{const} \cdot \hat{p}(\bX, \bT_j)
+		 \]
+		 \[
+		 	\log \hat{p}(\bX, \bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
+		 \]
+		 \[
+		     \log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
+		 \]
+		 \vspace{-0.3cm}
+	 \end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+	\begin{block}{ELBO}
+		\[
+			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Solution}
+		\vspace{-0.3cm}
+		\[
+			\log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	Assumptions: 
+	\begin{itemize}
+		\item $\bT = [\bT_1, \bT_2] = [\bZ, \btheta]$, $q(\bT) = q(\bT_1) \cdot q(\bT_2) = q(\bZ) \cdot q(\btheta)$.
+		\item restrict a class of probability distributions for $\btheta$ to Dirac delta functions:
+		\[
+			q_2 = q(\bT_2) = q(\btheta) = \delta(\btheta - \btheta^*).
+		\]
+		
+		Under the restrictions the exact solution for $q_2$ is not reached (KL can be greater than 0).
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+	\begin{block}{General solution}
+		\vspace{-0.3cm}
+		\[
+		\log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Solution for $q_1 = q(\bZ)$}
+		\vspace{-0.3cm}
+		\begin{multline*}
+			\log q(\bZ) = \int q(\btheta) \log p(\bX, \bZ,  \btheta) d\btheta + \text{const} = \\
+			= \int \delta(\btheta - \btheta^*) \log p(\bX, \bZ,  \btheta) d\btheta + \text{const} = \\
+			= \log p (\bZ | \bX, \btheta^*) +  \text{const}.
+		\end{multline*}
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{EM-algorithm (E-step)}
+		\vspace{-0.3cm}
+	\[
+		q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) = p(\bZ| \bX, \btheta^*).
+	\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+	\begin{block}{ELBO}
+		\[
+			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
+		\]
+	\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{ELBO maximization w.r.t. $q_2 = q(\btheta) = \delta(\btheta - \btheta^*)$}
+		\vspace{-0.3cm}
+		\begin{align*}
+			\mathcal{L} (q_1, q_2) &= - KL (q(\btheta) || \hat{p}(\bX, \btheta))  + \text{const}(\btheta^*) \\ 
+			&= \int q (\btheta) \log \frac{\hat{p}(\bX, \btheta)}{q(\btheta)} d\btheta + \text{const}(\btheta^*) \\
+			& = \int q (\btheta) \log \hat{p}(\bX, \btheta) d\btheta  - \int q (\btheta) \log q(\btheta) d\btheta + \text{const}(\btheta^*) \\
+			& = \int \delta(\btheta - \btheta^*) \log \hat{p}(\bX, \btheta) d\btheta + \text{const}(\btheta^*) \rightarrow \max_{\btheta^*}
+		\end{align*}
+		\vspace{-0.3cm}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+	
+	\begin{block}{ELBO maximization w.r.t. $q_2 = q(\btheta) = \delta(\btheta - \btheta^*)$}
+		\vspace{-0.3cm}
+		\begin{multline*}
+			\mathcal{L} (q_1, q_2) = \int \delta(\btheta - \btheta^*) \log \hat{p}(\bX, \btheta) d\btheta + \text{const}
+			= \log \hat{p}(\bX, \btheta^*)  + \text{const} \\
+			= \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const} = \mathbb{E}_{q_1} \log p(\bX, \bZ, \btheta^*) + \text{const} \\
+		= \int q(\bZ) \log p(\bX, \bZ|  \btheta^*) d\bZ + \log p(\btheta^*)+ \text{const}\rightarrow \max_{\btheta^*}
+	\end{multline*}
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{EM-algorithm (M-step)}
+		\vspace{-0.3cm}
+		 \begin{align*}
+		 	\mathcal{L}(q, \btheta) &= \int q(\bZ) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ)}d\bZ \\
+		 	&= \int q(\bZ) \log p(\bX, \bZ | \btheta) d\bZ + \text{const} \rightarrow \max_{\btheta}
+		 \end{align*}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Mean field approximation}
+    \begin{block}{Solution}
+    \[
+        \log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
+    \]
+    \end{block}
+
+	\begin{block}{EM algorithm (special case)}
+	\begin{itemize}
+		\item Initialize $\btheta^*$;
+		\item E-step
+		\[
+			q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+			 p(\bZ| \bX, \btheta^*);
+		\]
+		\item M-step
+		\[
+			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
+		\]
+		\item Repeat E-step and M-step until convergence.
+	\end{itemize}
 	\end{block}
 \end{frame}
 %=======
