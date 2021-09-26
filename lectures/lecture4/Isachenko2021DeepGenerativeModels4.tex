@@ -381,86 +381,17 @@
 %=======
 \begin{frame}{Fitting flows}
 	\begin{block}{MLE problem}
-		\vspace{-0.3cm}
-		\[
-		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Challenge}
-		$p(\bx | \btheta)$ can be intractable.
-	\end{block}
-	\begin{block}{Fitting flow to solve MLE}
 		\[
 		p(\bx|\btheta) = p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right|  = p(f(\bx, \btheta)) \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
 		\]
 		\[
-			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| \rightarrow \max_{\btheta}
 		\]
 	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Flows}
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figs/flows_how2.png}
 	\end{figure}
-	\vspace{-0.3cm}
-	\begin{block}{Computational requirement}
-		\vspace{-0.3cm}
-		\begin{itemize}	
-			\item Evaluating model density $p(\bx | \btheta)$ requires computing the transformation $\bz = f(\bx,  \btheta)$ and its Jacobian determinant $\left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|$,
-			and evaluating the density $p(\bz)$.
-			\item Sampling $\bx$ from the model requires the ability to sample from $p(\bz)$ and to compute the transformation $\bx = g(\bz, \btheta) = f^{-1}(\bz, \btheta)$. 
-		\end{itemize}
-	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Forward KL vs Reverse KL}
-	\begin{block}{Forward KL}
-		\vspace{-0.5cm}
-		\begin{align*}
-			KL(\pi || p) &= \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \\
-			&= - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \rightarrow \min_{\btheta}
-		\end{align*}
-		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
-	\end{block}
-	\begin{block}{Forward KL for flow model}
-	    \vspace{-0.3cm}
-		\[
-			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
-		\]
-		\begin{itemize}
-		\item We need to be able to compute $f(\bx, \btheta)$ and its Jacobian.
-		\item We need to be able to compute the density $p(\bz)$.
-		\item We don’t need to think about computing the function $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$ until we want to sample from the flow.
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Forward KL vs Reverse KL}
-	\begin{block}{Reverse KL}
-	  	\vspace{-0.5cm}
-			\begin{align*}
-				KL(p || \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
-				&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}
-			\end{align*}
-		\vspace{-0.7cm}
-	\end{block}
-	\begin{block}{Reverse KL for flow model}
-  		\vspace{-0.3cm}
-		\[
-			\log p(\bz) = \log p(\bx | \btheta) + \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right|
-		\]
-		\[
-			KL(p || \pi)  = \bbE_{p(\bz)} \left[  \log p(\bz) - \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| - \log \pi(g(\bz, \btheta)) \right]
-		\]
-		\begin{itemize}
-		\item We need to be able to compute $g(\bz, \btheta)$ and its Jacobian.
-		\item We need to be able to sample from the density $p(\bz)$ (do not need to evaluate it).
-		\item We don’t need to think about computing the function $f(\bx, \btheta)$.
-		\end{itemize}
-	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Composition of flows}
@@ -523,6 +454,53 @@
 		\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing flows for probabilistic modeling and inference, 2019} 
 \end{frame}
 %=======
+\begin{frame}{Forward KL vs Reverse KL}
+	\begin{block}{Forward KL}
+		\vspace{-0.5cm}
+		\begin{align*}
+			KL(\pi || p) &= \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \\
+			&= - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \rightarrow \min_{\btheta}
+		\end{align*}
+		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
+	\end{block}
+	\begin{block}{Forward KL for flow model}
+	    \vspace{-0.3cm}
+		\[
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+		\begin{itemize}
+		\item We need to be able to compute $f(\bx, \btheta)$ and its Jacobian.
+		\item We need to be able to compute the density $p(\bz)$.
+		\item We don’t need to think about computing the function $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$ until we want to sample from the flow.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL}
+	\begin{block}{Reverse KL}
+	  	\vspace{-0.5cm}
+			\begin{align*}
+				KL(p || \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
+				&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}
+			\end{align*}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Reverse KL for flow model}
+  		\vspace{-0.3cm}
+		\[
+			\log p(\bz) = \log p(\bx | \btheta) + \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right|
+		\]
+		\[
+			KL(p || \pi)  = \bbE_{p(\bz)} \left[  \log p(\bz) - \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| - \log \pi(g(\bz, \btheta)) \right]
+		\]
+		\begin{itemize}
+		\item We need to be able to compute $g(\bz, \btheta)$ and its Jacobian.
+		\item We need to be able to sample from the density $p(\bz)$ (do not need to evaluate it).
+		\item We don’t need to think about computing the function $f(\bx, \btheta)$.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 	\item The reparametrization trick gets unbiased gradients w.r.t to a variational posterior distribution.
@@ -533,7 +511,7 @@
 	\vfill
 	\item Standart VAE has several limitations that we will address later in the course.
 	\vfill
-	\item Forward KL minimization is equivalent to MLE. Reverse KL is used in variational inference.
+	\item Flows could be fitted using forward and reverse KL minimization. 
 	\vfill
 	\item Flow models transform a simple base distribution to a complex one via a sequence of invertible transformations.
 	\vfill
