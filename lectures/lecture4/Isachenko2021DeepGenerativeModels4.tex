@@ -400,58 +400,12 @@
 \end{frame}
 %=======
 \begin{frame}{Forward KL vs Reverse KL}
-	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions . \\
-	Instead of searching true $\pi(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
 	\begin{block}{Forward KL}
-		\vspace{-0.2cm}
-		\[
-			KL(\pi || p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
-		\]
-	\end{block}
-	\begin{block}{Reverse KL}
-		\vspace{-0.2cm}
-		\[
-			KL(p || \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
-		\]
-	\end{block}
-	\begin{itemize}
-		\item What is the difference between these two formulations?
-		\item What do we get in these two cases if $p(\bx | \btheta)$ is a flow model?
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Forward KL vs Reverse KL}
-	\begin{block}{Forward KL}
-		    \vspace{-0.5cm}
+		\vspace{-0.5cm}
 		\begin{align*}
 			KL(\pi || p) &= \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \\
-			&= \int \pi (\bx) \log \pi(\bx) d \bx - \int \pi (\bx) \log p(\bx | \btheta) d \bx \\
 			&= - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \rightarrow \min_{\btheta}
 		\end{align*}
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Monte-Carlo estimation}
-		\vspace{-0.5cm}
-		\[
-			KL(\pi || p) = - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) \rightarrow \min_{\btheta}.
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	    \begin{block}{MLE problem}
-	    \vspace{-0.5cm}
-	    \[
-	        \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-	    \]
-	    \vspace{-0.1cm}
-	    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Forward KL vs Reverse KL}
-	\begin{block}{Forward KL}
-	    \vspace{-0.3cm}
-		\[
-			\btheta^* = \argmax_{\btheta} \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) \approx  \argmin_{\btheta} KL(\pi || p)
-		\]
 		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
 	\end{block}
 	\begin{block}{Forward KL for flow model}
