@@ -332,6 +332,43 @@
 	\end{block}
 \end{frame}
 %=======
+\begin{frame}{Flows intuition}
+\end{frame}
+%=======
+\begin{frame}{Flows intuition}
+	Let $\xi$ be a random variable with density $p(\xi)$. Then
+	\[
+	\eta = F(\xi) = \int_{-\infty}^\xi p(t)dt \sim U[0, 1].
+	\]
+	\[
+	P(\eta < y) = P(F(\xi) < y) = P(\xi < F^{-1}(y)) = F(F^{-1}(y)) = y
+	\]
+	Hence
+	\[
+	\eta \sim U[0, 1]; \quad \xi = F^{-1}(\eta) \quad \Rightarrow \quad \xi \sim p(\xi).
+	\]
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/flows_1d}
+	\end{figure}
+	\myfootnotewithlink{https://sites.google.com/view/berkeley-cs294-158-sp19/home}{image credit: https://sites.google.com/view/berkeley-cs294-158-sp19/home}
+	
+\end{frame}
+%=======
+\begin{frame}{Flows intuition}
+	\begin{itemize}
+		\item Let $z \sim p(z)$ is a random variable with base distribution $p(z) = U[0, 1]$. 
+		\item Let $x \sim p(x)$ is a random variable with complex distribution $p(x)$ and cdf $F(x)$. 
+		\item Then noise variable $z$ can be transformed to $x$ using inverse cdf~$F^{-1}$ ($x = F^{-1}(z)$).
+	\end{itemize}
+	How to transform random variable $z$  which has a distribution different from uniform to $x$?
+	\begin{itemize}
+		\item Let $z \sim p(z)$ is a random variable with base distribution $p(z)$ and cdf $G(z)$.
+		\item Then $z_0 = G(z)$ has base distribution $p(z_0) = U[0, 1]$.
+		\item Let $x \sim p(x)$ is a random variable with complex distribution $p(x)$ and cdf $F(x)$. 
+		\item Then noise variable $z$ can be transformed to $x$ using cdf $G$ and inverse cdf~$F^{-1}$ ($x = F^{-1}(z_0) = F^{-1}(G(z))$).
+	\end{itemize}
+\end{frame}
+%=======
 \begin{frame}{ELBO interpretations}
 	\[
 		\log p(\bx | \btheta) = \cL (q, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
