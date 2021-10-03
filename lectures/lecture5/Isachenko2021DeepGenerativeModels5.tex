@@ -147,69 +147,74 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing flows for probabilistic modeling and inference, 2019} 
 \end{frame}
 %=======
-\begin{frame}{Planar Flows}
-	\vspace{-0.2cm}
+\begin{frame}{Jacobian structure}
+	\begin{block}{Flow log-likelihood}
+		\[
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+	\end{block}
+	The main challenge is a determinant of the Jacobian.
+	\begin{enumerate}
+		\begin{block}{What is a det of Jacobian in the following cases?}
+			\item Consider a linear layer $\bz = \bW \bx$.
+			\item Let $\bz$ be a permutation of $\bx$. 
+			\item Let $z_i$ depend only on $\bx_i$. 
+			\[
+				\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = \log \left| \prod_{i=1}^m f_i'(x_i, \btheta) \right| = \sum_{i=1}^m \log \left| f_i'(x_i, \btheta) \right|.
+			\]
+			\item Let $z_i$ depend only on $\bx_{1:i}$ (autoregressive dependency). 
+		\end{block}
+	\end{enumerate}
+\end{frame}
+%=======
+\begin{frame}{Residual Flows}
+	\begin{block}{Matrix determinant lemma}
+		\vspace{-0.5cm}
+		\[
+			\det \left( \bI_m + \bV \bW^T \right) = \det ( \bI_d + \bW^T \bV ), \quad \text{where } \bV, \bW \in \bbR^{m \times d}.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Planar flow}
+		\vspace{-0.2cm}
+		\[
+			\bx = g(\bz, \btheta) = \bz + \mathbf{u} \, \sigma(\bw^T\bz + b).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	Here $\btheta = \{\bu, \bw, b\}$, $\sigma(\cdot)$ is a smooth element-wise non-linearity.
+	{\small
 	\[
-	g(\bz, \btheta) = \bz + \mathbf{u} \, h(\bw^T\bz + b).
-	\]
-	\vspace{-0.2cm}
-	\begin{itemize}
-		\item $\btheta = \{\bu, \bw, b\}$;
-		\item $h$ is a smooth element-wise non-linearity.
-	\end{itemize}
-	\begin{align*}
-		\left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right)\right| &= \left| \det \left( \bI +  h'(\bw^T \bz + b) \bw\bu^T\right) \right| \\
-		&= \left| 1 + h'(\bw^T \bz + b) \bw^T \bu \right|
-	\end{align*}
+		\left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right)\right| = \left| \det \left( \bI + \sigma'(\bw^T \bz + b) \bw\bu^T\right) \right| = \left| 1 + \sigma'(\bw^T \bz + b) \bw^T \bu \right|
+	\]}
 	The transformation is invertible, for example, if
 	\[
-	h = \tanh; \quad h'(\bw^T \bz + b) \bu^T \bw \geq -1.
+		\sigma = \tanh; \quad \sigma'(\bw^T \bz + b) \bu^T \bw \geq -1.
 	\]
-	\vspace{-0.3cm}
-	\begin{block}{Sylvester flow: planar flow extension}
-	\vspace{-0.3cm}
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
+\end{frame}
+%=======
+\begin{frame}{Residual Flows}
+	\begin{block}{Expressiveness of planar flows}
+		\vspace{-0.5cm}
 		\[
-			g(\bz, \btheta) = \bz + \bA \, h(\bB\bz + \mathbf{b}).
+			\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k) = \bz_k + \bu_k\, \sigma(\bw_k^T\bz_k + b_k).
+		\]
+		\vspace{-0.8cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figs/planar_flows.png}
+		\end{figure}
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Sylvester flow: planar flow extension}
+		\vspace{-0.3cm}
+		\[
+		g(\bz, \btheta) = \bz + \bV \, \sigma(\bW^T\bz + \mathbf{b}).
 		\]
 	\end{block}
 	\myfootnote{\href{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015}\\
 	\href{https://arxiv.org/abs/1803.05649}{Berg R. et al. Sylvester normalizing flows for variational inference, 2018}}
-\end{frame}
-%=======
-\begin{frame}{Planar Flows}
-	\begin{block}{Composition of planar layers}
-	\[
-		\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
-	\]
-	\end{block}
-	\begin{block}{Expressiveness of planar flows}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/planar_flows.png}
-	\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Jacobian structure}
-
-	\begin{block}{Flow likelihood}
-		\[
-		\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
-		\]
-	\end{block}
-	\begin{itemize}
-		\item What is a determinant of a diagonal matrix?
-		\[
-		\bz = f(\bx, \btheta) = (f_1(x_1, \btheta), \dots, f_m(x_m, \btheta)).
-		\]
-		\[
-		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = \log \left| \prod_{i=1}^m f_i'(x_i, \btheta) \right| = \sum_{i=1}^m \log \left| f_i'(x_i, \btheta) \right|.
-		\]
-		\item What is a determinant of a triangular matrix? \\
-		Let $z_i$ depend only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
-		What is the Jacobian of such a transformation?
-	\end{itemize}
 \end{frame}
 %=======
 \begin{frame}{NICE}
