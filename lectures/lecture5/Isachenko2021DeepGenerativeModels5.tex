@@ -284,7 +284,7 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	We have got an autoregressive flow with base distribution $\bz = \cN(0, 1)$ and affine coupling law $\tau(x, \mu, \sigma) = x \odot \mu + \sigma$.
+	We have got an autoregressive flow with base distribution $\bz = \cN(0, 1)$ and affine coupling law $\tau(x, \mu, \sigma) = x \odot \sigma + \mu$.
 	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
@@ -443,7 +443,7 @@
 	\end{figure}
 	\begin{itemize}	
 		\item MAF performs parallel inference that is useful for density estimation tasks (forward KL or MLE).
-		\item IAF performs parallel generation that is useful for variational inference (reverse KL).
+		\item IAF performs parallel generation that is useful for optimization of reverse KL.
 	\end{itemize}
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
@@ -520,12 +520,14 @@
 		Estimating the density $p(\bx | \btheta)$ - $m$ passes, sampling - 1 pass.
 	\end{block}
 	\begin{block}{RealNVP}
-		\vspace{-0.8cm}
-		\begin{align*}
-			\bx_1 &= \bz_1; \\ 
-			\bx_2 &= \bz_2 \odot \exp \left(c_1(\bz_1, \btheta)\right) + c_2(\bz_1, \btheta).
-		\end{align*}
-		\vspace{-0.8cm}
+		\vspace{-0.2cm}
+		\[
+			\begin{cases}
+				\bx_{1:d} &= \bz_{1:d}; \\ 
+				\bx_{d:m} &= \bz_{d:m} \odot \exp \left(c_1(\bz_{1:d}, \btheta)\right) + c_2(\bz_{1:d}, \btheta).
+			\end{cases}
+		\]
+		\vspace{-0.5cm}
 		Estimating the density $p(\bx | \btheta)$ - 1 pass, sampling - 1 pass.
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
@@ -533,12 +535,14 @@
 %=======
 \begin{frame}{MAF vs IAF vs RealNVP}
 	\begin{block}{RealNVP}
-		\vspace{-0.8cm}
-		\begin{align*}
-			\bx_1 &= \bz_1; \\ 
-			\bx_2 &= \bz_2 \odot \exp \left(c_1(\bz_1, \btheta)\right) + c_2(\bz_1, \btheta).
-		\end{align*}
-		\vspace{-0.8cm}
+		\vspace{-0.3cm}
+		\[
+			\begin{cases}
+				\bx_{1:d} &= \bz_{1:d}; \\ 
+				\bx_{d:m} &= \bz_{d:m} \odot \exp \left(c_1(\bz_{1:d}, \btheta)\right) + c_2(\bz_{1:d}, \btheta).
+			\end{cases}
+		\]
+		\vspace{-0.3cm}
 	\end{block}
 	\begin{itemize}
 		\item Calculating the density $p(\bx | \btheta)$ - 1 pass.
@@ -568,69 +572,6 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
 \end{frame}
 %=======
-\begin{frame}{Linear flows}
-	
-	\begin{block}{RealNVP}
-		\vspace{-0.5cm}
-		\begin{equation*}
-			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
-			\quad \Leftrightarrow \quad 
-			\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d})).\end{cases}
-		\end{equation*}
-		\vspace{-0.2cm}
-	\end{block}
-	\begin{itemize}
-	\item First step is a \textbf{split} operator which decouples a variable into 2 subparts: $\bx_1$ and $\bx_2$ (usualy channel-wise).
-	\item Stacking layers we should \textbf{permute} components.
-	\end{itemize}
-	\[
-		\bz = \bW \bx, \quad \bW \in \bbR^{m \times m}
-	\]
-	In general, we need $O(m^3)$ to invert matrix.
-	\begin{block}{Invertibility}
-		\begin{itemize}
-			\item Diagonal matrix $O(m)$.
-			\item Triangular matrix $O(m^2)$.
-			\item It is impossible to parametrize all invertible matrices.
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Linear flows}
-	\vspace{-0.3cm}
-	\[
-		\bz = \bW \bx, \quad \bW \in \bbR^{m \times m}
-	\]
-	\vspace{-0.3cm}
-	\begin{block}{Matrix decompositions}
-		\begin{itemize}
-			\item LU-decomposition
-			\[
-				\bW = \mathbf{P} \bL \bU,
-			\]
-			where $\mathbf{P}$ is a permutation matrix, $\mathbf{L}$ is lower triangular with positive diagonal, $\mathbf{U}$ is upper triangular with positive diagonal.
-			\item QR-decomposition
-			\[
-				\bW = \bQ \mathbf{R},
-			\]
-			where $\bQ$ is an orthogonal matrix, $\mathbf{R}$ is an upper triangular matrix with positive diagonal.
-		\end{itemize}
-	\end{block}
-
-	\myfootnote{
-		\href{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}  \\
-		\href{https://arxiv.org/abs/1901.11137}{Hoogeboom E., Van Den Berg R., and Welling M. Emerging convolutions for generative normalizing flows, 2019}
-	}
-\end{frame}
-%=======
-\begin{frame}{Glow samples}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/glow_faces.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item Flow models use invertible transformation with tractable Jacobian.
@@ -642,8 +583,6 @@
 		\item MAF/IAF is a special case of autoregressive flows.
 		\vfill
 		\item The RealNVP is an effective type of flow (special case of AR flows) that uses coupling layer.
-		\vfill
-		\item Linear flows try to parametrize set of invertible matrices via matrix decompositions.
 	\end{itemize}
 \end{frame}
 \end{document} 
