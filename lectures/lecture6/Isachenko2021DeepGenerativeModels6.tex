@@ -21,8 +21,8 @@
 	\begin{block}{Residual flows: planar/Sylvester}
 		\vspace{-0.7cm}
 		\[
-			g(\bz, \btheta) = \bz + \mathbf{u} \, h(\bw^T\bz + b); \quad 
-			g(\bz, \btheta) = \bz + \bA \, h(\bB\bz + \mathbf{b}).
+			g(\bz, \btheta) = \bz + \mathbf{u} \, \sigma(\bw^T\bz + b); \quad 
+			g(\bz, \btheta) = \bz + \bA \, \sigma(\bB\bz + \mathbf{b}).
 		\]
 		Matrix determinant lemma for calculating the Jacobian.
 	\end{block}
@@ -324,29 +324,6 @@ What are the pros and cons of each of them? \\
 	\myfootnotewithlink{https://arxiv.org/abs/1611.05013}{Gulrajani I. et al. PixelVAE: A Latent Variable Model for Natural Images, 2016}
 \end{frame}
 %=======
-\begin{frame}{PixelVAE}
-	\begin{minipage}[t]{0.5\columnwidth}
-		MNIST
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\linewidth]{figs/PixelVAE_5.png}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		ImageNet 64x64
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/PixelVAE_4.png}
-		\end{figure}
-	\end{minipage}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.5\linewidth]{figs/PixelVAE_3.png}
-	\end{figure}
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1611.05013}{Gulrajani I. et al. PixelVAE: A Latent Variable Model for Natural Images, 2016}
-\end{frame}
-%=======
 \begin{frame}{Decoder weakening}
 	\begin{itemize}
 		\item Powerful decoder $p(\bx | \bz, \btheta)$ makes the model expressive, but posterior collapse is possible.
@@ -614,15 +591,11 @@ What are the pros and cons of each of them? \\
 	\begin{itemize}
 		\item Linear flows try to parametrize set of invertible matrices via matrix decompositions.
 		\vfill
-		\item Gaussian autoregressive model is a special type of flow.
+		\item More powerful decoder in VAE leads to more expressive generative model. However, too expressive decoder could lead to the posterior collapse.
 		\vfill
-		\item MAF is an example of such a model which is suitable for density estimation tasks. IAF uses an inverse autoregressive transformation for variational inference task.
+		\item The decoder weakening is a set of techniques to avoid the posterior collapse.
 		\vfill
-		\item RealNVP is a special case of IAF and MAF.
-		\vfill
-		\item There is a duality between forward and reverse KL for flow models.
-		\vfill
-		\item To apply a continuous model to a discrete distribution it is standard practice to dequantize data at first.
+		\item The IWAE could get the tighter lower bound to the likelihood, but the training of such model becomes more difficult.
 	\end{itemize}
 \end{frame}
 %=======
