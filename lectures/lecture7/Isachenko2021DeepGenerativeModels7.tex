@@ -428,24 +428,24 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1705.07120}{Tomczak J. M., Welling M. VAE with a VampPrior, 2017}
 \end{frame}
 %=======
-\begin{frame}{Flows in VAE prior}
-	\begin{block}{Flow-based prior}
+\begin{frame}{Flows-based VAE prior}
+	\begin{block}{Flow model in latent space}
 		\vspace{-0.3cm}
 		\[
-			\log p(\bz | \blambda) = \log p(\bepsilon) + \log \det \left | \frac{d \bepsilon}{d\bz}\right|
+			\log p(\bz | \blambda) = \log p(\bepsilon) + \log \det \left | \frac{d \bepsilon}{d\bz}\right| = \log p(\bepsilon) + \log \det \left | \frac{\partial f(\bz, \blambda)}{\partial \bz}\right| 
 		\]
 		\[
 			\bz = g(\bepsilon, \blambda) = f^{-1}(\bepsilon, \blambda)
 		\]
-		\vspace{-0.5cm}
-		\begin{itemize}
-			\item RealNVP flow.
-			\item Autoregressive flow (MAF).
-		\end{itemize}
-		Why it is not a good idea to use IAF for VAE prior?
 	\end{block}
-	\begin{block}{ELBO with AF prior}
-		\vspace{-0.6cm}
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item RealNVP flow.
+		\item Autoregressive flow (MAF).
+	\end{itemize}
+	Why it is not a good idea to use IAF for VAE prior?
+	\begin{block}{ELBO with flow-based VAE prior}
+		\vspace{-0.3cm}
 		{\small
 		\begin{multline*}
 			\mathcal{L}(q, \btheta) = \mathbb{E}_{q(\bz | \bx)} \left[ \log p(\bx | \bz, \btheta) +  \log p(\bz | \blambda) - \log q(\bz | \bx) \right] \\
@@ -496,107 +496,77 @@
 	\[
 	\bz_0 \sim q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
 	\]
-	Here, $q(\bz | \bx, \bphi)$ (which is a VAE encoder) plays a role of a base distribution.
-	\[
-	\bz_0 \xrightarrow{g_1} \bz_1 \xrightarrow{g_2} \dots \xrightarrow{g_K} \bz_K, \quad \bz_K = g(\bz_0), \quad g = g_K \circ \dots \circ g_1.
-	\]
-	Each $g_k $ is a flow transformation (e.g. planar, coupling layer) parameterized by $\bphi_k$.
-	\begin{align*}
-		\log q_K(\bz_K | \bx, \bphi, \{\bphi_k\}_{k=1}^K) &= \log q(\bz_0 | \bx, \bphi) \\ &- \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
-	\end{align*}
+	Let $q(\bz | \bx, \bphi)$ (VAE encoder) be a base distribution for a flow model.
 	
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Flows in VAE posterior}
-	\begin{block}{ELBO}
+	\begin{block}{Flow model in latent space}
 		\vspace{-0.3cm}
 		\[
-		p(\bx | \btheta) \geq \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx, \bphi)} \rightarrow \max_{\bphi, \btheta}.
+			\log q(\bz^* | \bx, \bphi, \blambda) = \log q(\bz | \bx, \bphi) + \log \det \left | \frac{\partial g(\bz, \blambda)}{\partial \bz}\right|
 		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Flow model in latent space}
-		\vspace{-0.7cm}
 		\[
-		\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
+			\bz^* = g(\bz, \blambda) = f^{-1}(\bz, \blambda)
 		\]
-		\vspace{-0.5cm}
 	\end{block}
-	Let use $q_K(\bz_K | \bx, \bphi_*), \, \bphi_* = \{\bphi, \bphi_1, \dots, \bphi_K\}$ as a variational distribution. Here $\bphi$~-- encoder parameters, $\{\bphi_k\}_{k=1}^K$~-- flow parameters.
+	Here $g(\bz, \blambda)$ is a flow model (e.g. stack of planar/coupling layers) parameterized by $\blambda$.
 	
-	\begin{itemize}
-		\item Encoder outputs base distribution $q(\bz_0 | \bx, \bphi)$.
-		\item Flow model $\bz_K = g(\bz_0, \{\bphi_k\}_{k=1}^K)$ transforms the base distribution $q(\bz_0 | \bx, \bphi)$ to the distribution $q_K(\bz_K | \bx, \bphi_*)$.
-		\item Distribution $q_K(\bz_K | \bx, \bphi_*)$ is used as a variational distribution for ELBO maximization.
-	\end{itemize}
+	
+	Let use $q(\bz^* | \bx, \bphi, \blambda)$ as a variational distribution. Here $\bphi$~-- encoder parameters, $\blambda$~-- flow parameters.
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
-\begin{frame}{Flows in VAE posterior}
+\begin{frame}{Flows-based VAE posterior}
+	\begin{itemize}
+		\item Encoder outputs base distribution $q(\bz | \bx, \bphi)$.
+		\item Flow model $\bz^* = g(\bz, \blambda)$ transforms the base distribution $q(\bz | \bx, \bphi)$ to the distribution $q(\bz^* | \bx, \bphi, \blambda)$.
+		\item Distribution $q(\bz^* | \bx, \bphi, \blambda)$ is used as a variational distribution for ELBO maximization.
+	\end{itemize}
+	
 	\begin{block}{Flow model in latent space}
-		\vspace{-0.7cm}
+		\vspace{-0.3cm}
 		\[
-		\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
+			\log q(\bz^* | \bx, \bphi, \blambda) = \log q(\bz | \bx, \bphi) + \log \det \left | \frac{\partial g(\bz, \blambda)}{\partial \bz}\right|
 		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{ELBO with flow-based VAE posterior}
 		\vspace{-0.5cm}
+		\begin{align*}
+			\mathcal{L} (\bphi, \btheta, \blambda)  
+			&= \bbE_{q(\bz^* | \bx, \bphi, \blambda)} \bigl[\log p(\bx, \bz^* | \btheta) - \log q(\bz^*| \bx, \bphi, \blambda) \bigr] \\ 
+			&=  \bbE_{q(\bz^* | \bx, \bphi, \blambda)} \log p(\bx | \bz^*, \btheta) - KL (q(\bz^* | \bx, \bphi, \blambda) || p(\bz^*)).
+		\end{align*}
+		\vspace{-0.3cm}
+	\end{block}
+	The second term in ELBO is reverse KL divergence. Planar flows was originally proposed for variational inference in VAE.
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
+\end{frame}
+%=======
+\begin{frame}{Flows-based VAE posterior}
+	
+	\begin{block}{Flow model in latent space}
+		\vspace{-0.3cm}
+		\[
+			\log q(\bz^* | \bx, \bphi, \blambda) = \log q(\bz | \bx, \bphi) + \log \det \left | \frac{\partial g(\bz, \blambda)}{\partial \bz}\right|
+		\]
+		\vspace{-0.3cm}
 	\end{block}
 	\begin{block}{ELBO objective}
 		\vspace{-0.5cm}
-		\begin{align*}
-			\mathcal{L} (\bphi, \btheta)  &= \mathbb{E}_{q_K(\bz_K | \bx, \bphi_*)} \log \frac{p(\bx, \bz_K | \btheta)}{q_K(\bz_K| \bx, \bphi_*)} \\
-			&= \mathbb{E}_{q_K(\bz_K | \bx, \bphi_*)} \bigl[\log p(\bx, \bz_K | \btheta) - \log q_K(\bz_K| \bx, \bphi_*) \bigr] \\ 
-			&=  \mathbb{E}_{q_K(\bz_K | \bx, \bphi_*)} \log p(\bx | \bz_K, \btheta) - KL (q_K(\bz_K| \bx, \bphi_*) || p(\bz_K)).
-		\end{align*}
+		\begin{multline*}
+			\mathcal{L} (\bphi, \btheta, \blambda)  
+			= \mathbb{E}_{q(\bz^* | \bx, \bphi, \blambda)} \bigl[\log p(\bx, \bz^* | \btheta) - \log q(\bz^*| \bx, \bphi, \blambda) \bigr] = \\
+			= \mathbb{E}_{q(\bz | \bx, \bphi)} \left. \bigl[\log p(\bx, \bz^* | \btheta) - \log q(\bz^*| \bx, \bphi, \blambda) \bigr]\right|_{\bz^* = g(\bz, \blambda)} = \\
+			= \mathbb{E}_{q(\bz | \bx, \bphi)} \bigg[\log p(\bx, \bz^* | \btheta) -  \log q(\bz | \bx, \bphi ) + \log \left| \det \left( \frac{\partial g(\bz, \blambda)}{\partial \bz} \right) \right| \bigg].
+		\end{multline*}
 	\end{block}
-	The second term in ELBO is reverse KL divergence. Planar flows was originally proposed for variational inference in VAE.
+	\begin{itemize}
+		\item Obtain samples $\bz$ from the encoder $q(\bz | \bx, \bphi)$.
+		\item Apply flow model $\bz^* = g(\bz, \blambda)$.
+		\item Compute likelihood for $\bz^*$ using the decoder, base distribution for $\bz^*$ and the Jacobian.
+	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Flows in VAE posterior}
-\begin{block}{Variational distribution}
-	\vspace{-0.5cm}
-	\[
-	\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
-	\]
-	\vspace{-0.5cm}
-\end{block}
-\begin{block}{ELBO objective}
-	\vspace{-0.5cm}
-	\begin{align*}
-		\mathcal{L} (\bphi, \btheta) 
-		&= \mathbb{E}_{q_K(\bz_K | \bx, \bphi_*)} \bigl[\log p(\bx, \bz_K | \btheta) - \log q_K(\bz_K| \bx, \bphi_*) \bigr] \\
-		&= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \left. \bigl[\log p(\bx, \bz_K | \btheta) - \log q_K(\bz_K| \bx, \bphi_*) \bigr]\right|_{\bz_K = g(\bz_0, \{\bphi_k\}_{k=1}^K)} \\
-		&= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \bigg[\log p(\bx, \bz_K | \btheta) -  \log q(\bz_0 | \bx, \bphi ) + \\ & \quad  + \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right| \bigg].
-	\end{align*}
-\end{block}
-\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Flows in VAE posterior}
-\begin{block}{Variational distribution}
-	\vspace{-0.6cm}
-	\[
-	\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
-	\]
-	\vspace{-0.6cm}
-\end{block}
-\begin{block}{ELBO objective}
-	\vspace{-0.7cm}
-	\begin{align*}
-		\mathcal{L} (\bphi, \btheta) 
-		&= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \bigg[\log p(\bx, \bz_K | \btheta) -  \log q(\bz_0 | \bx, \bphi ) + \\ & \quad  + \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right| \bigg].
-	\end{align*}
-	\vspace{-0.5cm}
-\end{block}
-\begin{itemize}
-	\item Obtain samples $\bz_0$ from the encoder.
-	\item Apply flow model $\bz_K = g(\bz_0, \{\bphi_k\}_{k = 1}^K)$.
-	\item Compute likelihood for $\bz_K$ using the decoder, base distribution for $\bz_0$ and the Jacobian.
-	\item We do not need inverse flow function, if we use flows in variational inference.
-\end{itemize}
-\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
 \begin{frame}{Inverse autoregressive flow (IAF)}
@@ -619,8 +589,8 @@
 	\end{itemize}
 	\vspace{-0.3cm}
 	\begin{align*}
-		\bz_0 &= \bsigma(\bx) \odot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz_0 | \bx, \bphi). \\
-		\bz_k &= \tilde{\bsigma}_k(\bz_{k - 1}) \odot \bz_{k-1} + \tilde{\bmu}_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\bphi_j\}_{j=1}^k).
+		\bz &= \bsigma(\bx) \odot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz | \bx, \bphi). \\
+		\bz_k &= \tilde{\bsigma}_k(\bz_{k - 1}) \odot \bz_{k-1} + \tilde{\bmu}_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\blambda_j\}_{j=1}^k).
 	\end{align*}
 	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
@@ -636,7 +606,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
-\begin{frame}{Flows in VAE prior}
+\begin{frame}{Flows-based VAE prior vs Flow-based VAE posterior}
 	\begin{block}{Theorem}
 	VAE with the AF prior for latent code $\bz$ is equivalent to using the IAF posterior for latent code $\bepsilon$.
 	\end{block}
@@ -663,7 +633,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 \end{frame}
 %=======
-\begin{frame}{Flows in VAE prior}
+\begin{frame}{Flows-based VAE prior vs Flow-based VAE posterior}
 	\begin{block}{Autoregressive flow prior}
 		{\footnotesize
 		\begin{align*}
