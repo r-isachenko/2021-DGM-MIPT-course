@@ -26,9 +26,9 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 3 | September, 22 | Latent Variable Models. Variational lower bound. EM-algorithm. Amortized inference. | [slides](lectures/lecture3/Isachenko2021DeepGenerativeModels3.pdf) | [video](https://youtu.be/m8pi9DybzCk) | 
 | 4 | September, 29 | Reparametrization trick, Variational Autoencoder. Flow models definition. Forward and reverse KL divergence. | [slides](lectures/lecture4/Isachenko2021DeepGenerativeModels4.pdf) | [video](https://youtu.be/0rzj6uiENT4) | 
 | 5 | October, 6 | Residual flows (Planar/Sylvester flows). Autoregressive flows (MAF/IAF/RealNVP). | [slides](lectures/lecture5/Isachenko2021DeepGenerativeModels5.pdf) | [video](https://youtu.be/vM55KpqYOZ8) | 
-| 6 | October, 13 | Linear flows (Glow). Flows in variational inference. Flow KL duality. Uniform dequantization. | TBA | TBA |  
-| 7 | October, 20 | Variational dequantization. IWAE. ELBO surgery. | TBA | TBA | 
-| 8 | October, 27 | VampPrior + Autoregressive prior. Posterior collapse. Disentanglement learning (beta-VAE). | TBA | TBA | 
+| 6 | October, 13 | Linear flows (Glow). Posterior collapse and decoder weakening. Tigher ELBO (IWAE). | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [video](https://youtu.be/0RUbgbMYMrY) |  
+| 7 | October, 20 | ELBO surgery. Flows in variational inference. VampPrior + Autoregressive prior. | TBA | TBA | 
+| 8 | October, 27 | Uniform and variational dequantization. Disentanglement learning (beta-VAE). | TBA | TBA | 
 | 9 | Novermber, 3 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | TBA | TBA | 
 | 10 | Novermber, 11 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | TBA | TBA | 
 | 11 | Novermber, 18 | WGAN-GP. Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID) | TBA | TBA | 
