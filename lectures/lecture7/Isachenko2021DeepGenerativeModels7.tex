@@ -327,57 +327,69 @@
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery}
-	\begin{block}{Theorem}
-		\vspace{-0.2cm}
-		\[
-		 	\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i) || p(\bz)) = KL(q(\bz) || p(\bz)) + \bbI_q [\bx, \bz].
-		\]
-		\vspace{-0.2cm}
-	\end{block}
 	\begin{block}{ELBO revisiting}
-	\vspace{-0.6cm}
-	\begin{multline*}
-	    \frac{1}{n}\sum_{i=1}^n \cL_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right] = \\
-	    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-	\end{multline*}
-	\vspace{-0.3cm}
+		\vspace{-0.7cm}
+		\begin{multline*}
+		    \frac{1}{n}\sum_{i=1}^n \cL_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right] = \\
+		    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
+		\end{multline*}
+		\vspace{-0.3cm}
 	\end{block}
 	Prior distribution $p(\bz)$ is only in the last term.
+	\begin{block}{Optimal VAE prior}
+		\vspace{-0.3cm}
+		\[
+	  		KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
+		\]
+		The optimal prior $p(\bz)$ is the aggregated posterior $q(\bz)$.
+	\end{block}
+	
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
-\begin{frame}{ELBO surgery}
-	\vspace{-0.6cm}
-	\[
-	    \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
-	    - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-	\]
-	\vspace{-0.3cm}
-	\[
-	    KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
-	\]
-	The optimal prior distribution $p(\bz)$ is aggregated posterior $q(\bz)$.
-
+\begin{frame}{Optimal VAE prior}
 	How to choose the optimal $p(\bz)$?
 	\begin{itemize}
 		\item Standard Gaussian $p(\bz) = \mathcal{N}(0, I)$ $\Rightarrow$ over-regularization;
-		\vspace{0.1cm}
-		\item Parametrized distribution $p(\bz | \blambda)$;
 		\item $p(\bz) = q(\bz) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i)$ $\Rightarrow$ overfitting and highly expensive.
 	\end{itemize}
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
+	\vspace{-0.3cm}
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{block}{Non learnable prior $p(\bz)$}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.8\linewidth]{figs/non_learnable_prior}
+			\end{figure}
+		\end{block}
+	\end{minipage}%
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{block}{Learnable prior $p(\bz | \blambda)$}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.8\linewidth]{figs/learnable_prior}
+			\end{figure}
+		\end{block}
+	\end{minipage}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/7/7\_priors.html}{image credit: https://jmtomczak.github.io/blog/7/7\_priors.html}
 \end{frame}
 %=======
-\begin{frame}{VampPrior}
+\begin{frame}{Learnable VAE prior}
 	\begin{block}{Optimal prior}
+		\vspace{-0.4cm}
+		\[
+			KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
+		\]
+		\vspace{-0.4cm}
+	\end{block}
+	\begin{block}{Mixture of Gaussians}
 		\vspace{-0.3cm}
 		\[
-		KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
+			p(\bz | \blambda) = \sum_{k=1}^K w_k \cN(\bz | \bmu_k, \bsigma_k^2), \quad \blambda = \{\bw_k, \bmu_k, \bsigma_k\}_{k=1}^K.
 		\]
-		The optimal prior distribution $p(\bz)$ is aggregated posterior $q(\bz)$.
+		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Variational Mixture of posteriors}
-		\vspace{-0.2cm}
+	\begin{block}{Variational Mixture of posteriors (VampPrior)}
+		\vspace{-0.3cm}
 		\[
 		p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K q(\bz | \bu_k),
 		\]
@@ -392,8 +404,8 @@
 %=======
 \begin{frame}{VampPrior}
 	\begin{itemize}
-	\item Do we equally need the multimodal prior?
-	\item Is it beneficial to couple the prior with the variational posterior or it is enough to parametrize the prior?
+	\item Do we really need the multimodal prior?
+	\item Is it beneficial to couple the prior with the variational posterior or the MoG prior is enough?
 	\end{itemize}
 	\begin{block}{Results}
 		\vspace{-0.3cm}
@@ -417,23 +429,7 @@
 \end{frame}
 %=======
 \begin{frame}{Flows in VAE prior}
-	
-	\begin{block}{ELBO revisiting}
-		\vspace{-0.4cm}
-		\[
-		    \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
-	- \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-		\]
-	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{VampPrior}
-		\vspace{-0.5cm}
-		\[
-			p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K q(\bz | \bu_k),
-		\]
-	where $\bu_1, \dots, \bu_K$ are trainable preudo-inputs.
-	\end{block}
-	\begin{block}{Autoregressive flow prior}
+	\begin{block}{Flow-based prior}
 		\vspace{-0.3cm}
 		\[
 			\log p(\bz | \blambda) = \log p(\bepsilon) + \log \det \left | \frac{d \bepsilon}{d\bz}\right|
@@ -441,6 +437,21 @@
 		\[
 			\bz = g(\bepsilon, \blambda) = f^{-1}(\bepsilon, \blambda)
 		\]
+		\vspace{-0.5cm}
+		\begin{itemize}
+			\item RealNVP flow.
+			\item Autoregressive flow (MAF).
+		\end{itemize}
+		Why it is not a good idea to use IAF for VAE prior?
+	\end{block}
+	\begin{block}{ELBO with AF prior}
+		\vspace{-0.6cm}
+		{\small
+		\begin{multline*}
+			\mathcal{L}(q, \btheta) = \mathbb{E}_{q(\bz | \bx)} \left[ \log p(\bx | \bz, \btheta) +  \log p(\bz | \blambda) - \log q(\bz | \bx) \right] \\
+				= \mathbb{E}_{q(\bz | \bx)} \left[ \log p(\bx | \bz, \btheta) + \underbrace{ \Bigl( \log p(f(\bz, \blambda)) + \log \left| \det \frac{\partial f(\bz, \blambda)}{\partial \bz} \right| \Bigr) }_{\text{AF prior}} - \log q(\bz | \bx) \right] 
+		\end{multline*}
+		}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 \end{frame}
@@ -476,7 +487,7 @@
 		\item In E-step of EM-algorithm we wish $KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)) = 0$. \\
 		(In this case the lower bound is tight $\log p(\bx | \btheta) = \mathcal{L}(q, \btheta)$). \\
 		\item Normal variational distribution $q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx))$ is poor (e.g. has only one mode). \\
-		\item Flows models convert a simple base distribution to a complex one using invertible transformation with simple Jacobian. How to use flows in VAE?
+		\item Flows models convert a simple base distribution to a complex one using invertible transformation with simple Jacobian. How to use flows in VAE posterior?
 	\end{itemize}
 \end{frame}
 %=======
