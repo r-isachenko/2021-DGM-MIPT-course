@@ -8,6 +8,55 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{Recap of previous lecture}
+	\vspace{-0.3cm}
+	\[
+	\frac{1}{n} \sum_{i=1}^n \mathcal{L}_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right].
+	\]
+	\vspace{-0.3cm}
+	\begin{block}{Theorem}
+		\[
+		\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i) || p(\bz)) = KL(q(\bz) || p(\bz)) + \bbI_{q} [\bx, \bz],
+		\]
+		\begin{itemize}
+			\item $q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i)$ -- \textbf{aggregated} posterior distribution.
+			\item $\bbI_{q} [\bx, \bz]$ -- mutual information between $\bx$ and $\bz$ under empirical data distribution and distribution $q(\bz | \bx)$.
+			\item First term pushes $q(\bz)$ towards the prior $p(\bz)$.
+			\item Second term reduces the amount of	information about $\bx$ stored in $\bz$. 
+		\end{itemize}
+	\end{block}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{ELBO surgery}
+	\vspace{-0.6cm}
+	\[
+	    \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
+	    - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
+	\]
+	\end{block}
+	\vspace{-0.8cm}
+	\begin{block}{Optimal prior}
+		\vspace{-0.4cm}
+		\[
+		KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
+		\]
+		\vspace{-0.2cm}\\
+		The optimal prior distribution $p(\bz)$ is aggregated posterior $q(\bz)$.
+	\end{block}
+
+	\begin{block}{VampPrior}
+		\vspace{-0.4cm}
+		\[
+		p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K q(\bz | \bu_k),
+		\]
+		\vspace{-0.2cm} \\
+		where $\blambda = \{\bu_1, \dots, \bu_K\}$ are trainable pseudo-inputs.
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07120}{Tomczak J. M., Welling M. VAE with a VampPrior, 2017}
+\end{frame}
+%=======
 \begin{frame}{Flows in VAE posterior}
 	Apply a sequence of transformations to the random variable
 	\[
@@ -159,130 +208,6 @@
 	\end{figure}
 
 	\myfootnotewithlink{https://courses.cs.washington.edu/courses/cse599i/20au/slides/L09_flow.pdf}{image credit: https://courses.cs.washington.edu/courses/cse599i/20au}
-\end{frame}
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{ELBO}
-		\vspace{-0.3cm}
-		\[
-			p(\bx | \btheta) \geq \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx, \bphi)} \rightarrow \max_{\bphi, \btheta}.
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-		\begin{itemize}
-			\item Normal variational distribution $q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx))$ is poor (e.g. has only one mode). \\
-			\item Flows models convert a simple base distribution to a compex one using an invertible transformation with simple Jacobian. 
-		\end{itemize}
-	\begin{block}{Flow model in latent space}
-		\vspace{-0.7cm}
-		\[
-			\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	Let's use $q_K(\bz_K | \bx, \bphi_*), \, \bphi_* = \{\bphi, \bphi_1, \dots, \bphi_K\}$ as a variational distribution. Here, $\bphi$~-- encoder parameters, $\{\bphi_k\}_{k=1}^K$~-- flow parameters.
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Variational distribution}
-		\vspace{-0.6cm}
-		\[
-			\log q_K(\bz_K | \bx, \bphi_*) = \log q(\bz_0 | \bx, \bphi) - \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right|.
-		\]
-		\vspace{-0.6cm}
-	\end{block}
-	\begin{block}{ELBO objective}
-		\vspace{-0.7cm}
-		\begin{align*}
-			\mathcal{L} (\bphi, \btheta) 
-			&= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \bigg[\log p(\bx, \bz_K | \btheta) -  \log q(\bz_0 | \bx, \bphi ) + \\ & \quad  + \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right| \bigg].
-		\end{align*}
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{itemize}
-		\item Obtain samples $\bz_0$ from the encoder.
-		\item Apply flow model $\bz_K = g(\bz_0, \{\bphi_k\}_{k = 1}^K)$.
-		\item Compute likelihood for $\bz_K$ using the decoder, base distribution for $\bz_0$ and the Jacobian.
-		\item We do not need an inverse flow function if we use flows in variational inference.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	Images are discrete data flow is a continuous model.
-	We need to convert a discrete data distribution to a continuous one.
-	
-	\begin{block}{Uniform dequantization bound}
-		\vspace{-0.5cm}
-		\[
-			\bx \sim \text{Categorical}(\bpi), \quad 
-			\bu \sim U[0, 1], \quad 
-			\by = \bx + \bu \sim \text{Continuous} 
-		\]
-		\vspace{-0.4cm}
-		\[
-			\log P(\bx | \btheta) \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu.
-		\]
-	\end{block}
-	\vspace{-0.2cm}
-	\begin{block}{Variational dequantization bound}
-		Introduce variational dequantization noise distribution $q(\bu | \bx)$ and treat it as an approximate posterior. 
-		\vspace{-0.2cm}
-		\[
-			\log P(\bx | \btheta) \geq  \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu = \mathcal{L}(q, \btheta).
-		\]
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/uniform_dequantization.png}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/variational_dequantization.png}
-		\end{figure}
-	\end{minipage}
-	\begin{block}{Flow model for dequantization}
-	\vspace{-0.3cm}
-	\[
-	q(\bu | \bx) = p(h^{-1}(\bu, \bphi)) \cdot \left| \det \frac{\partial h^{-1}(\bu, \bphi)}{\partial \bu}\right|.
-	\]
-	\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Variational dequantization bound}
-		\[
-		\mathcal{L}(q, \btheta) = \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu.
-		\]
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	\vspace{-0.3cm}
-	\[
-	\frac{1}{n} \sum_{i=1}^n \mathcal{L}_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right].
-	\]
-	\vspace{-0.3cm}
-	\begin{block}{Theorem}
-		\[
-		\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i) || p(\bz)) = KL(q(\bz) || p(\bz)) + \bbI_{q} [\bx, \bz],
-		\]
-		\begin{itemize}
-			\item $q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i)$ -- \textbf{aggregated} posterior distribution.
-			\item $\bbI_{q} [\bx, \bz]$ -- mutual information between $\bx$ and $\bz$ under empirical data distribution and distribution $q(\bz | \bx)$.
-			\item First term pushes $q(\bz)$ towards the prior $p(\bz)$.
-			\item Second term reduces the amount of	information about $\bx$ stored in $\bz$. 
-		\end{itemize}
-	\end{block}
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{Dequantization}
