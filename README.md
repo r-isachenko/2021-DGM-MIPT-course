@@ -27,7 +27,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 4 | September, 29 | Reparametrization trick, Variational Autoencoder. Flow models definition. Forward and reverse KL divergence. | [slides](lectures/lecture4/Isachenko2021DeepGenerativeModels4.pdf) | [video](https://youtu.be/0rzj6uiENT4) | 
 | 5 | October, 6 | Residual flows (Planar/Sylvester flows). Autoregressive flows (MAF/IAF/RealNVP). | [slides](lectures/lecture5/Isachenko2021DeepGenerativeModels5.pdf) | [video](https://youtu.be/vM55KpqYOZ8) | 
 | 6 | October, 13 | Linear flows (Glow). Posterior collapse and decoder weakening. Tigher ELBO (IWAE). | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [video](https://youtu.be/0RUbgbMYMrY) |  
-| 7 | October, 20 | ELBO surgery. VampPrior + flow-based VAE prior. Flows-based variational VAE posterior.  | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | TBA | 
+| 7 | October, 20 | ELBO surgery. VampPrior + flow-based VAE prior. Flows-based variational VAE posterior.  | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | [video](https://youtu.be/Db_5chaA1jg) | 
 | 8 | October, 27 | Uniform and variational dequantization. Disentanglement learning (beta-VAE). | TBA | TBA | 
 | 9 | Novermber, 3 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | TBA | TBA | 
 | 10 | Novermber, 11 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | TBA | TBA | 
