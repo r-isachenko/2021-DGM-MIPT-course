@@ -1028,6 +1028,59 @@ where $i$ is treated as random variable:
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05983}{Kim H., Mnih A. Disentangling by Factorising, 2018}
 \end{frame}
 %=======
+
+\begin{frame}{Challenging Disentanglement Assumptions}
+\begin{block}{Proof (1)}
+	\begin{enumerate}
+		\item 
+		Consider the function $g: \text{supp}(\bz) \rightarrow [0, 1]^d$:
+		\vspace{-0.1cm}
+		\[
+		g_i(\bu) = P(z_i \leq u_i), \quad i=1, \dots, d.
+		\]
+		\vspace{-0.4cm}
+		\begin{itemize}
+			\item $g$ is bijective (since $p(\bz) = \prod_{i=1}^dp(z_i)$).
+			\item $\frac{\partial g_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial g_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
+			\item $g(\bz)$ is an independent $d$-dimensional uniform distribution.
+		\end{itemize}
+		\item 
+		Consider $h: (0, 1]^d \rightarrow \bbR^d$
+		\[
+		h_i(\bu) = \psi^{-1}(u_i), \quad i= 1, \dots, d.
+		\]
+		Here $\psi$  denotes the CDF of a standard normal distribution.
+		\begin{itemize}
+			\item $h$ is bijective.
+			\item $\frac{\partial h_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial h_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
+			\item $h(g(\bz))$  is a $d$-dimensional standard normal distribution.
+		\end{itemize}
+	\end{enumerate}
+\end{block}
+
+\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
+\end{frame}
+%=======
+\begin{frame}{Challenging Disentanglement Assumptions}
+\begin{block}{Proof (2)}
+	Let $\bA \in \bbR^{d \times d}$ be an arbitrary orthogonal matrix with $A_{ij} \neq 0$ for all $i, j$.
+	The family of such matrices is infinite.
+	\begin{itemize}
+		\item $\bA$ is orthogonal, it is invertible and thus defines a bijective linear operator. 
+		\item $\bA h(g(\bz)) \in \bbR^d$ is hence an independent, multivariate standard normal distribution.
+		\item $h^{-1}( \bA h(g(\bz))) \in \bbR^d$ is an independent $d$-dimensional uniform distribution.
+	\end{itemize}
+	Define $f: \text{supp}(\bz) \rightarrow \text{supp}(\bz)$:
+	\vspace{-0.2cm}
+	\[
+	f(\bu) = g^{-1} (h^{-1}( \bA h(g(\bz)))).
+	\]
+	By definition $f(\bz)$ has the same marginal distribution as $\bz$: $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ and $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$.
+\end{block}
+
+\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
+\end{frame}
+%=======
 \begin{frame}{Improved techniques for training GANs}
 \end{frame}
 %=======
