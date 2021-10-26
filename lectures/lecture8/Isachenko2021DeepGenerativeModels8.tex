@@ -376,36 +376,25 @@
 \end{frame}
 %=======
 \begin{frame}{Disentangled representations}
-	\begin{block}{Unsupervised representation learning}
-	    Learning an interpretable factorised representation of the independent data generative factors of the world without supervision. 
-	\end{block}
+	\textbf{Representation learning} is looking for an interpretable representation of the independent data generative factors. 
 	\begin{block}{Disentanglement informal definition}
-	A disentangled representation can be defined as one where single latent units are sensitive to changes in single generative factors, while being relatively invariant to changes in other factors. 
+		Every single latent unit are sensitive to changes in a single generative factor, while being invariant to changes in other factors. 
 	\end{block}
-	\begin{block}{Example}
-	Model trained on a dataset of 3D objects might learn independent latent units sensitive to single independent data generative factors, such as object identity, position, scale, lighting or colour. 
-	\end{block}
-	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
-\end{frame}
-%=======
-\begin{frame}{Disentanglement learning}
 	\begin{block}{Generative process}
-	\begin{itemize}
-	    \item $\pi(\bx | \bv, \bw) = \text{Sim}(\bv, \bw)$~-- true world simulator;
-	    \item $\bv$~-- conditionally independent factors: $\pi(\bv | \bx) = \prod_{j=1}^d \pi(v_j | \bx)$;
-	    \item $\bw$~-- conditionally dependent factors. 
-	\end{itemize}
+		\vspace{-0.2cm}
+		\begin{itemize}
+		    \item $\pi(\bx | \bv, \bw) = \text{Sim}(\bv, \bw)$~-- true world simulator;
+		    \item $\bv$~-- conditionally independent factors: $\pi(\bv | \bx) = \prod_{j=1}^d \pi(v_j | \bx)$;
+		    \item $\bw$~-- conditionally dependent factors. 
+		\end{itemize}
 	\end{block}
-	\begin{block}{Goal}
-	Construct an unsupervised deep generative model
-	\[
-	    p(\bx | \bz, \btheta) \approx \pi(\bx | \bv, \bw).
-	\]
-	\vspace{-0.5cm}
-	\begin{itemize}
-	    \item Ensure that the inferred latent factors $q(\bz|\bx)$ capture the factors $\bv$ in a disentangled manner. 
-	    \item The conditionally dependent factors $\bw$ can remain entangled in a separate subset of $\bz$ that is not used for representing $\bv$. 
-	\end{itemize}
+	\vspace{-0.3cm}
+	\begin{block}{Unsupervised generative model}
+		\vspace{-0.4cm}
+		\[
+		    p(\bx | \bz, \btheta) \approx \pi(\bx | \bv, \bw).
+		\]
+		The latent factors $q(\bz|\bx)$ capture the factors $\bv$ in a disentangled manner. The conditionally dependent factors $\bw$ remains entangled in a subset of $\bz$ that is not used for representing $\bv$. 
 	\end{block}
 	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
 \end{frame}
@@ -436,16 +425,7 @@
 \begin{frame}{$\beta$-VAE}
 	\begin{figure}
 	    \centering
-	    \includegraphics[width=0.95\linewidth]{figs/betaVAE_1.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
-\end{frame}
-%=======
-\begin{frame}{$\beta$-VAE}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.9\linewidth]{figs/betaVAE_3.png}
+	    \includegraphics[width=0.9\linewidth]{figs/betaVAE_1.png}
 	\end{figure}
 
 	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
@@ -454,7 +434,7 @@
 \begin{frame}{$\beta$-VAE}
 		\begin{figure}[h]
 			\centering
-			\includegraphics[width=.9\linewidth]{figs/betaVAE_5.png}
+			\includegraphics[width=.95\linewidth]{figs/betaVAE_5.png}
 		\end{figure}
 
 	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
@@ -529,131 +509,66 @@
 \end{frame}
 %=======
 \begin{frame}{DIP-VAE}
+	Reconstructions become better.
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.75\linewidth]{figs/dip-vae_1}
+		\includegraphics[width=\linewidth]{figs/dip-vae_1}
 	\end{figure}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
 \end{frame}
 %=======
 \begin{frame}{Challenging Disentanglement Assumptions}
-Whether unsupervised disentanglement learning is even possible for arbitrary generative models?
 
 \begin{block}{Theorem}
-	For $d > 1$, let $\bz \sim P$ denote any distribution which admits a density $p(\bz) = \prod^d_{i=1} p(z_i)$. Then, there exists an infinite family of bijective functions $f : \text{supp}(\bz) \rightarrow \text{supp}(\bz)$ such that
+	Let $\bz \sim P$ with a density $p(\bz) = \prod^d_{i=1} p(z_i)$. Then, there exists an \textbf{infinite} family of bijective functions $f : \text{supp}(\bz) \rightarrow \text{supp}(\bz)$:
 	\begin{itemize}
-		\item $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$ almost everywhere for all $i$ and $j$ (i.e., $\bz$ and $f(\bz)$ are completely entangled);
-		\item and $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ for all $\bu \in \text{supp}(\bz)$ (i.e., they
-		have the same marginal distribution).
+		\item $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$ for all $i$ and $j$ ($\bz$ and $f(\bz)$ are completely entangled);
+		\item $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ for all $\bu \in \text{supp}(\bz)$.
 	\end{itemize}  
 \end{block}
-
+Consider a generative model with disentangled representation $\bz$.
+\begin{itemize}
+	\item $\exists$ $\hat{\bz} = f(\bz)$ where $\hat{\bz}$ is completely entangled
+	with respect to $\bz$.
+	\item The disentanglement method cannot distinguish between the two equivalent generative models:
+	\vspace{-0.3cm}
+	\[
+		p(\bx) = \int p(\bx | \bz) p(\bz) d\bz = \int p(\bx | \hat{\bz})p(\hat{\bz}) d \hat{\bz}.
+	\]
+\end{itemize}
 Theorem claims that unsupervised disentanglement learning is impossible for arbitrary generative models with a factorized prior.
 
 \myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
 \end{frame}
 %=======
 \begin{frame}{Challenging Disentanglement Assumptions}
-Assume we have $p(\bz)$ and some $p(\bx|\bz)$ defining a generative model. Consider any unsupervised
-disentanglement method and assume that it finds a representation that is perfectly disentangled with respect
-to $\bz$ in the generative model.
-\begin{itemize}
-	\item Theorem claims that $\exists$ $\hat{\bz} = f(\bz)$ where $\hat{\bz}$ is completely entangled
-	with respect to $\bz$.
-	\item Since the (unsupervised) disentanglement method only has access to
-	observations $\bx$, it hence cannot distinguish between the two equivalent generative models and thus has to be entangled to at least one of them
-	\[
-	p(\bx) = \int p(\bx | \bz) p(\bz) d\bz = \int p(\bx | \hat{\bz})p(\hat{\bz}) d \hat{\bz}.
-	\]
-\end{itemize}
-
-\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
-\end{frame}
-%=======
-\begin{frame}{Challenging Disentanglement Assumptions}
-\begin{block}{Proof (1)}
-	\begin{enumerate}
-		\item 
-		Consider the function $g: \text{supp}(\bz) \rightarrow [0, 1]^d$:
-		\vspace{-0.1cm}
-		\[
-		g_i(\bu) = P(z_i \leq u_i), \quad i=1, \dots, d.
-		\]
-		\vspace{-0.4cm}
-		\begin{itemize}
-			\item $g$ is bijective (since $p(\bz) = \prod_{i=1}^dp(z_i)$).
-			\item $\frac{\partial g_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial g_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
-			\item $g(\bz)$ is an independent $d$-dimensional uniform distribution.
-		\end{itemize}
-		\item 
-		Consider $h: (0, 1]^d \rightarrow \bbR^d$
-		\[
-		h_i(\bu) = \psi^{-1}(u_i), \quad i= 1, \dots, d.
-		\]
-		Here $\psi$  denotes the CDF of a standard normal distribution.
-		\begin{itemize}
-			\item $h$ is bijective.
-			\item $\frac{\partial h_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial h_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
-			\item $h(g(\bz))$  is a $d$-dimensional standard normal distribution.
-		\end{itemize}
-	\end{enumerate}
-\end{block}
-
-\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
-\end{frame}
-\begin{frame}{Challenging Disentanglement Assumptions}
-\begin{block}{Proof (2)}
-	Let $\bA \in \bbR^{d \times d}$ be an arbitrary orthogonal matrix with $A_{ij} \neq 0$ for all $i, j$.
-	The family of such matrices is infinite.
-	\begin{itemize}
-		\item $\bA$ is orthogonal, it is invertible and thus defines a bijective linear operator. 
-		\item $\bA h(g(\bz)) \in \bbR^d$ is hence an independent, multivariate standard normal distribution.
-		\item $h^{-1}( \bA h(g(\bz))) \in \bbR^d$ is an independent $d$-dimensional uniform distribution.
-	\end{itemize}
-	Define $f: \text{supp}(\bz) \rightarrow \text{supp}(\bz)$:
-	\vspace{-0.2cm}
-	\[
-	f(\bu) = g^{-1} (h^{-1}( \bA h(g(\bz)))).
-	\]
-	By definition $f(\bz)$ has the same marginal distribution as $\bz$: $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ and $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$.
-\end{block}
-
-\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
-\end{frame}
-%=======
-\begin{frame}{Challenging Disentanglement Assumptions}
-\begin{block}{Importance of different models and hyperparameters for disentanglement}
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{figs/challenge_dis_2}
+		\includegraphics[width=0.85\linewidth]{figs/challenge_dis_2}
 	\end{figure}
-\end{block}
-
-\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
-\end{frame}
-%=======
-\begin{frame}{Challenging Disentanglement Assumptions}
-\begin{block}{Agreement of different disentanglement metrics}
+	\vspace{-0.3cm}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.9\linewidth]{figs/challenge_dis_3}
+		\includegraphics[width=0.65\linewidth]{figs/challenge_dis_3}
 	\end{figure}
-	\vspace{0.5cm}
-\end{block}
 
 \myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
 \end{frame}
 %=======
 \begin{frame}{Summary}
 \begin{itemize}
-	\item Uniform dequantization is the simplest form of dequantization. 
+	\item Dequantization allows to fit discrete data using continuous model.
 	\vfill
-	\item Variational dequantization is a more natural type that was proposed in Flow++ model.
+	\item Uniform dequantization is the simplest form of dequantization. Variational dequantization is a more natural type that was proposed in Flow++ model.
 	\vfill
 	\item Disentanglement learning tries to make latent components more informative.
 	\vfill
 	\item $\beta$-VAE makes the latent components more independent, but the reconstructions get poorer.
+	\vfill
+	\item DIP-VAE does not make the reconstructions worse using ELBO surgery theorem.
+	\vfill
+	\item Majority of disentanglement learning models use heuristic objective or regularizers to achieve the goal, but the task itself could not be solved without good inductive bias.
 \end{itemize}
 \end{frame}
 \end{document} 
