@@ -1028,7 +1028,9 @@ where $i$ is treated as random variable:
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05983}{Kim H., Mnih A. Disentangling by Factorising, 2018}
 \end{frame}
 %=======
-
+\begin{frame}{Challenging Disentanglement Assumptions}
+\end{frame}
+%=======
 \begin{frame}{Challenging Disentanglement Assumptions}
 \begin{block}{Proof (1)}
 	\begin{enumerate}
@@ -1079,6 +1081,71 @@ where $i$ is treated as random variable:
 \end{block}
 
 \myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
+\end{frame}
+%=======
+\begin{frame}{DCGAN}
+\end{frame}
+%=======
+\begin{frame}{Vanilla GAN results}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.95\linewidth]{figs/Vanila_gan_results}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
+\end{frame}
+%=======
+\begin{frame}{Deep Convolutional GAN}
+	\begin{block}{Architecture}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/dcgan_1}
+		\end{figure}
+	\end{block}
+	\vspace{-0.4cm}
+	\begin{itemize}
+		\footnotesize
+		\item  Mean-pooling instead of max-pooling.
+		\item Transposed convolutions in the generator for upsampling.
+		\item Downsample with strided convolutions and average pooling.
+		\item ReLU for generator, Leaky-ReLU (0.2) for discriminator.
+		\item Output nonlinearity: tanh for Generator, sigmoid for discriminator.
+		\item Batch Normalization used to prevent mode collapse (not applied at the output of $G$ and input of $D$).
+		\item Adam: small LR = 2e-4; small momentum: 0.5, batch-size: 128.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
+\end{frame}
+%=======
+\begin{frame}{Deep Convolutional GAN}
+	\begin{block}{ImageNet samples}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_1}
+		\end{figure}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
+\end{frame}
+%=======
+\begin{frame}{Deep Convolutional GAN}
+	\begin{block}{Smooth interpolations}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_2}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
+\end{frame}
+%=======
+\begin{frame}{Deep Convolutional GAN}
+	\begin{block}{Vector arithmetic}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/dcgan_results_3}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{Improved techniques for training GANs}
