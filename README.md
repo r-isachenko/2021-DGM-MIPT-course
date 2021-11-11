@@ -29,11 +29,11 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 6 | October, 13 | Linear flows (Glow). Posterior collapse and decoder weakening. Tigher ELBO (IWAE). | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [video](https://youtu.be/0RUbgbMYMrY) |  
 | 7 | October, 20 | ELBO surgery. VampPrior + flow-based VAE prior.  | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | [video](https://youtu.be/Db_5chaA1jg) | 
 | 8 | October, 27 | Flows-based VAE posterior vs prior. Uniform and variational dequantization. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [video](https://youtu.be/epHEJBaS6og) | 
-| 9 | Novermber, 3 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | TBA | TBA | 
-| 10 | Novermber, 11 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | TBA | TBA | 
-| 11 | Novermber, 18 | WGAN-GP. Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID) | TBA | TBA | 
-| 12 | Novermber, 25 | GAN evaluation (Precision-Recall). GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). AVB. | TBA | TBA | 
-| 13 | December, 1 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | TBA | TBA | 
+| 9 | Novermber, 10 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [video](https://youtu.be/nMd2MwltiP4) | 
+| 10 | Novermber, 17 | Vanishing gradients and Mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. WGAN-GP. | TBA | TBA | 
+| 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID, Precision-Recall) | TBA | TBA | 
+| 12 | December, 1 | GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). AVB. | TBA | TBA | 
+| 13 | December, 8 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | TBA | TBA | 
 
 
 ## Homeworks 
