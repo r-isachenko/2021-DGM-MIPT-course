@@ -11,7 +11,7 @@
 \begin{frame}{Recap of previous lecture}
 	\begin{block}{Likelihood-free learning}
 		\begin{itemize}
-			\item Likelihood is not a perfect measure quality measure for generative model.
+			\item Likelihood is not a perfect quality measure for generative model.
 			\item Likelihood could be intractable.
 		\end{itemize}
 	\end{block}
@@ -107,9 +107,10 @@
 %=======
 \begin{frame}{Mode collapse}
 	The phenomena where the generator of a GAN collapses to one or few distribution modes.
+	\vspace{-0.15cm}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.9\linewidth]{figs/mode_collapse_1}
+		\includegraphics[width=0.75\linewidth]{figs/mode_collapse_1}
 	\end{figure}
 	\vspace{-0.2cm}
 	\begin{figure}
@@ -322,7 +323,7 @@
 	\begin{block}{WGAN objective}
 		\vspace{-0.6cm}
 		\[
-		\min_{G} W(\pi || p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
+		\min_{G} W(\pi || p) \approx \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
 		\]
 	\end{block}
 	\begin{itemize}
@@ -438,8 +439,6 @@
 \begin{frame}{Summary}
 	\begin{itemize} 
 		\item Mode collapse and vanishing gradients are the two main problems of vanilla GAN.  Lots of tips and tricks has to be used to make the GAN training is stable and scalable.
-		\vfill
-		\item DCGAN is the first GAN with deep convolutional architecture.
 		\vfill
 		\item KL and JS divergences work poorly as model objective in the case of disjoint supports.
 		\vfill
