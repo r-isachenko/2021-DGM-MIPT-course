@@ -10,7 +10,7 @@
 %=======
 \begin{frame}{Recap of previous lecture}
 	\begin{block}{Vanilla GAN}
-		\vspace{-0.5cm}
+		\vspace{-0.6cm}
 		\[
 			\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
@@ -47,7 +47,7 @@
 				\item $\gamma(\bx, \by)$ -- the amount, $\|\bx - \by \|$-- the distance.
 			\end{itemize}
 		\end{block}
-		\begin{block}{Kantorovich-Rubinstein duality}
+		\begin{block}{Theorem (Kantorovich-Rubinstein duality)}
 			\vspace{-0.2cm}
 			\[
 				W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right],
@@ -58,62 +58,46 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
-		\begin{block}{Vanilla GAN objective}
-			\vspace{-0.2cm}
-			\[
-				\min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
-			\]
-			\vspace{-0.2cm}
-		\end{block}
 		\begin{block}{WGAN objective}
-			\vspace{-0.6cm}
+			\vspace{-0.5cm}
 			\[
-			\min_{G} W(\pi || p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
+				\min_{G} W(\pi || p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
 			\]
+			\vspace{-0.5cm}
 		\end{block}
 		\begin{itemize}
-			\item Discriminator $D$ is similar to the function $f$, but not the same (it is not a classifier anymore). In the WGAN model, function~$f$ is usually called $\textit{critic}$.
-			\item "Weight clipping is a clearly terrible way to enforce a Lipschitz constraint". If the clipping parameter is large, it is hard to train the critic till optimality. If the clipping parameter is too small, it could lead to vanishing gradients.
+			\item Function~$f$ in WGAN is usually called $\textit{critic}$.
+			\item If parameters $\bphi$ lie in a compact set $\boldsymbol{\Phi} \in [-0.01, 0.01]^d$ then $f(\bx, \bphi)$ will be $K$-Lipschitz continuous function. 
 		\end{itemize}
-		\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
-		
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Kantorovich-Rubinstein duality}
-		\vspace{-0.2cm}
-		\[
-			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right],
-		\]
-		where $\| f \|_L \leq K$ are $K-$Lipschitz continuous functions ($f: \cX \rightarrow \bbR$).
-	\end{block}
-	\begin{block}{Gradient penalty}
-		\vspace{-0.3cm}
-		\[
-			W(\pi || p) = \underbrace{\bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{U[0, 1]} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}}.
-		\]
+		\begin{block}{Gradient penalty}
+			\vspace{-0.7cm}
+			\[
+				W(\pi || p) = \underbrace{\bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{U[0, 1]} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}}.
+			\]
+			\vspace{-0.7cm}
+		\end{block}
 		Samples $\hat{\bx}_t = t \bx + (1 - t) \by$ with $t \in [0, 1]$ are uniformly sampled along straight lines between pairs of points: $\bx$ from the data distribution $\pi(\bx)$ and $\by$ from the generator distribution $p(\bx | \btheta)$.
-	\end{block}
-	\myfootnote{
-	\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017} \\
-	\href{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017} }
+		\myfootnote{
+		\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017} \\
+		\href{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017} }
 \end{frame}
 %=======
 \begin{frame}{Spectral Normalization GAN}
-	How else could we enforce Lipschitzness?
-	\begin{block}{Fact 1}
-		Let denote by $\sigma(\bA)$ a spectral norm of matrix $\bA$.
+	\begin{block}{Definition}
+		$\| \bA \|_2$ is a \textit{spectral norm} of matrix $\bA$:
 		\[
-			\sigma(\bA) = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA),
+			\| \bA \|_2 = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA^T \bA),
 		\]
-		where $\lambda_{\text{max}}(\bA)$ is the largest singular value of $\bA$. \\
-		By definition, Lipschitz norm is 
-		\[
-			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx))
-		\]
+		where $\lambda_{\text{max}}(\bA^T \bA)$ is the largest eigenvalue value of $\bA^T \bA$.
 	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{Fact 2}
+	\begin{block}{Statement 1}
+		if $g$ is a K-Lipschitz function then 
+		\[
+			\| \mathbf{g} \|_L \leq K = \sup_\bx \| \nabla \mathbf{g}(\bx)) \|_2.
+		\]
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Statement 2}
 		Lipschitz norm of superposition is bounded above by product of Lipschitz norms
 		\vspace{-0.2cm}
 		\[
@@ -126,21 +110,21 @@
 \begin{frame}{Spectral Normalization GAN}
 	Let consider the critic $f(\bx, \bphi)$ of the following form:
 	\[
-		f(\bx, \bphi) = \bW_{K+1} a_K (\bW_K a_{K-1}(\dots a_1(\bW_1 \bx) \dots)).
+		f(\bx, \bphi) = \bW_{K+1} \sigma_K (\bW_K \sigma_{K-1}(\dots \sigma_1(\bW_1 \bx) \dots)).
 	\]
 	This feedforward network is a superposition of simple functions.
 	\begin{itemize}
-		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
+		\item $a_k$ is a pointwise nonlinearities. We assume that $\| \sigma_k \|_L = 1$ (it holds for ReLU).
 		\item $\mathbf{g}(\bx) = \bW \bx$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
 		\[
-			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
+			\| \mathbf{g} \|_L \leq \sup_\bx \| \nabla \mathbf{g}(\bx)\|_2 = \| \bW \|_2.
 		\]
 	\end{itemize}
-	\vspace{-0.3cm}
+	\vspace{-0.4cm}
 	\begin{block}{Critic spectral norm}
-		\vspace{-0.3cm}
+		\vspace{-0.4cm}
 		\[
-			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| a_k \|_L \cdot \| \bW_k \| = \prod_{k=1}^{K+1} \sigma(\bW_k).
+			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| \sigma_k \|_L \cdot \| \bW_k \| = \prod_{k=1}^{K+1} \|\bW_k\|_2.
 		\]
 		\vspace{-0.2cm}
 	\end{block}
@@ -150,10 +134,10 @@
 \end{frame}
 %=======
 \begin{frame}{Spectral Normalization GAN}
-	How to compute $\sigma(\bW)$? \\
-	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes intractable.
+	How to compute $ \| \bW \|_2 = \lambda_{\text{max}}(\bW^T \bW)$? \\
+	 If we apply SVD to compute the $\| \bW \|_2$ at each iteration, the algorithm becomes intractable.
 	 
-	 \begin{block}{Power iteration}
+	 \begin{block}{Power iteration method}
 	 	\begin{itemize}
 	 		\item $\bu_0$ -- random vector.
 	 		\item for $k = 0, \dots, n - 1$: ($n$ is a large enough number of steps)
@@ -162,7 +146,7 @@
 	 		\]
 	 		\item approximate the spectral norm
 	 		\[
-	 			\sigma(\bW) \approx \bu_{n}^T \bW \bv_{n}.
+	 			\| \bW \|_2 = \lambda_{\text{max}}(\bW^T \bW) \approx \bu_{n}^T \bW \bv_{n}.
 	 		\]
 	 	\end{itemize}
 	 \end{block}
