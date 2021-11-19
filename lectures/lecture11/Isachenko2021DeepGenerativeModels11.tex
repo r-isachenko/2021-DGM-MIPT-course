@@ -9,7 +9,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
-	\begin{block}{Vanilla GAN}
+	\begin{block}{Standard GAN}
 		\vspace{-0.6cm}
 		\[
 			\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
@@ -168,14 +168,12 @@
 \end{frame}
 %=======
 \begin{frame}{Divergences}
-	\begin{block}{What do we have?}
-		\begin{itemize}
-			\item Forward KL divergence in maximum likelihood estimation
-			\item Reverse KL in variational inference
-			\item JS divergence in  vanilla gan
-			\item Wasserstein distance in WGAN
-		\end{itemize}
-	\end{block}
+	\begin{itemize}
+		\item Forward KL divergence in maximum likelihood estimation.
+		\item Reverse KL in variational inference.
+		\item JS divergence in standard GAN.
+		\item Wasserstein distance in WGAN.
+	\end{itemize}
 	\begin{block}{What is a divergence?}
 		Let $\cS$ be the set of all possible probability distributions. Then $D: \cS \times \cS \rightarrow \bbR$ is a divergence if 
 		\begin{itemize}
@@ -188,7 +186,10 @@
 		\[
 			\min_p D(\pi || p)
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Chalenge}
+		We do not know the real distribution $\pi(\bx)$!
 	\end{block}
 \end{frame}
 %=======
@@ -250,7 +251,6 @@
 	\end{block}
 	This is a lower bound because of Jensen-Shannon inequality and restricted class of functions $\cT: \cX \rightarrow \bbR$.
 	
-	\textbf{Note:} To evaluate lower bound we only need samples from $\pi(\bx)$ and $p(\bx)$. Hence, we could fit implicit generative model.
 	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
 \end{frame}
 %=======
@@ -261,6 +261,30 @@
 		\]
 		The lower bound is tight for $T^*(\bx) = f'\left( \frac{\pi(\bx)}{p(\bx)} \right)$.
 	\end{block}
+	\begin{block}{Example (JSD)}
+		\begin{itemize}
+			\item Let define function $f$ and its conjugate $f^*$
+			\[ 
+				f(u) = u \log u - (u + 1) \log (u + 1), \quad f^*(t) = - \log (1 - e^t).
+			\]
+			\item Let reparametrize $T(\bx) = \log D(\bx)$.
+		\end{itemize}
+		\vspace{-0.7cm}
+	\end{block}
+	\[
+		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
+	\]
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\begin{block}{Variational divergence estimation}
+		\[
+			D_f(\pi || p) \geq \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\]
+	\end{block}
+	\textbf{Note:} To evaluate lower bound we only need samples from $\pi(\bx)$ and $p(\bx)$. Hence, we could fit implicit generative model.
 	\begin{figure}
 		\centering
 		\includegraphics[width=1.0\linewidth]{figs/f_div_results}
