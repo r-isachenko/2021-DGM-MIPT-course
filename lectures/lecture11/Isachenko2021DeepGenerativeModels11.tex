@@ -124,11 +124,11 @@
 	\begin{block}{Critic spectral norm}
 		\vspace{-0.4cm}
 		\[
-			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| \sigma_k \|_L \cdot \| \bW_k \| = \prod_{k=1}^{K+1} \|\bW_k\|_2.
+			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| \sigma_k \|_L \cdot \| \bW_k \|_2 = \prod_{k=1}^{K+1} \|\bW_k\|_2.
 		\]
 		\vspace{-0.2cm}
 	\end{block}
-	If we replace the weights in the critic $f(\bx, \bphi)$ by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
+	If we replace the weights in the critic $f(\bx, \bphi)$ by $\bW^{SN}_k = \bW_k / \|\bW_k\|_2$, we will get $\| f\|_L \leq 1.$ \\
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
 \end{frame}
@@ -369,25 +369,6 @@
 \end{frame}
 %=======
 \begin{frame}{Evaluation of likelihood-free models}
-	\begin{block}{Inception Score}
-		\vspace{-0.1cm}
-		\[
-			IS =  \exp \left( \bbE_{\bx} KL(p(y | \bx) || p(y)) \right)
-		\]
-		\vspace{-0.1cm}
-	\end{block}
-	\begin{block}{IS limitations}
-		\begin{itemize}
-			\item Inception score depends on the quality of the pretrained classifier $p(y | \bx)$.
-			\item If generator produces images with a different set of labels from the classifier training set, IS will be low.
-			\item If the generator produces one image per class, the IS will be perfect (there is no measure of intra-class diversity).
-			\item IS only require samples from the generator and do not take into account the desired data distribution $\pi(\bx)$ directly (only implicitly via a classifier).
-		\end{itemize}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1801.01973}{Barratt S., Sharma R. A Note on the Inception Score, 2018}
-\end{frame}
-%=======
-\begin{frame}{Evaluation of likelihood-free models}
 	\begin{block}{Theorem (informal)}
 		If $\pi(\bx)$ and $p(\bx | \btheta)$ has moment generation functions then
 		\vspace{-0.1cm}
@@ -400,7 +381,7 @@
 	\begin{block}{Frechet Inception Distance}
 		\vspace{-0.3cm}
 		\[
-			D^2 (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right)
+			FID (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -422,23 +403,35 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
 \end{frame}
 %=======
-\begin{frame}{Evaluation of likelihood-free models}
-	\begin{block}{Frechet Inception Distance}
-		\vspace{-0.1cm}
+\begin{frame}{Limitations}
+	\vspace{-0.5cm}
+	\begin{block}{Inception Score}
+		\vspace{-0.5cm}
 		\[
-		D^2 (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right)
+			IS =  \exp \left( \bbE_{\bx} KL(p(y | \bx) || p(y)) \right)
 		\]
+		\vspace{-0.7cm}
 	\end{block}
-	\begin{block}{FID limitations}
-		\begin{itemize}
-			\item FID depends on the pretrained classification model.
-			\item FID needs a large samples  size for evaluation.
-			\item Calculation of FID is slow.
-			\item FID estimates only two sample moments.
-		\end{itemize}
+	\begin{itemize}
+		\item If generator produces images with a different set of labels from the classifier training set, IS will be low.
+		\item If generator produces one image per class, the IS will be perfect (there is no measure of intra-class diversity).
+	\end{itemize}
+	\begin{block}{Frechet Inception Distance}
+		\vspace{-0.4cm}
+		\[
+			FID = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right)
+		\]
+		\vspace{-0.7cm}
 	\end{block}
+	\begin{itemize}
+		\item Needs a large sample size for evaluation.
+		\item Calculation of FID is slow.
+		\item Estimates only two sample moments.
+	\end{itemize}
+	Both scores depend on the pretrained classifier $p(y | \bx)$.
 
-	\myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
+	\myfootnote{\href{https://arxiv.org/abs/1801.01973}{Barratt S., Sharma R. A Note on the Inception Score, 2018} \\
+	\href{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Precision-Recall for Generative Models}
