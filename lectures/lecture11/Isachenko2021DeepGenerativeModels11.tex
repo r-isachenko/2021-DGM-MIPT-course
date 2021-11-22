@@ -466,7 +466,7 @@
 	\[
 		f(\mathbf{g}, \cG) = 
 		\begin{cases}
-			1, \text{if exists } \mathbf{g}' \in \cG: \| \mathbf{g}  - \mathbf{g}'\|_2 \leq \| \mathbf{g} - \text{NN}_k(\mathbf{g}, \cG)\|_2; \\
+			1, \text{if exists } \mathbf{g}' \in \cG: \| \mathbf{g}  - \mathbf{g}'\|_2 \leq \| \mathbf{g}' - \text{NN}_k(\mathbf{g}', \cG)\|_2; \\
 			0, \text{otherwise.}
 		\end{cases}
 	\]
@@ -494,9 +494,11 @@
 	\begin{itemize}
 		\item Spectral normalization is a weight normalization technique to enforce Lipshitzness, which is helpful for generator and discriminator.
 		\vfill
-		\item f-divergence family is a unified framework for divergence minimization, which uses variational approximation.
+		\item f-divergence family is a unified framework for divergence minimization, which uses variational approximation. Standard GAN is a special case of it.
 		\vfill
 		\item Inception Score and Frechet Inception Distance are the common metrics for GAN evaluation, but both of them have drawbacks.
+		\vfill
+		\item Precision-recall allows to select model with compromise with sample quality and sample diversity.
 	\end{itemize}
 \end{frame}
 \end{document} 
