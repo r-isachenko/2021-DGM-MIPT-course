@@ -11,57 +11,57 @@
 \begin{frame}{Recap of previous lecture}
 	\vspace{-0.3cm}
 	\[
-		f(\bx, \bphi) = \bW_{K+1} a_K (\bW_K a_{K-1}(\dots a_1(\bW_1 \bx) \dots)).
+		f(\bx, \bphi) = \bW_{K+1} \sigma_K (\bW_K \sigma_{K-1}(\dots \sigma_1(\bW_1 \bx) \dots)).
 	\]
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
+		\item $a_k$ is a pointwise nonlinearities. We assume that $\| \sigma_k \|_L = 1$ (it holds for ReLU).
 		\item $\mathbf{g}(\bx) = \bW \bx$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
 		\[
-			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
+			\| \mathbf{g} \|_L = \sup_\bx \| \nabla \mathbf{g}(\bx) \|_2 = \|\bW\|_2.
 		\]
 	\end{itemize}
 	\vspace{-0.3cm}
 	\begin{block}{Critic spectral norm}
 		\vspace{-0.3cm}
 		\[
-			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| a_k \|_L \cdot \| \bW_k \| = \prod_{k=1}^{K+1} \sigma(\bW_k).
+			\| f \|_L \leq \| \bW_{K+1}\|_2 \cdot \prod_{k=1}^K  \| \sigma_k \|_L \cdot \| \bW_k \|_2 = \prod_{k=1}^{K+1} \|\bW_k\|_2.
 		\]
 		\vspace{-0.2cm}
 	\end{block}
 	\begin{block}{Spectral Normalization GAN}
-	If we replace the weights in the critic $f(\bx, \bphi)$ by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
+	If we replace the weights in the critic $f(\bx, \bphi)$ by $\bW^{SN}_k = \bW_k / \|\bW_k\|_2$, we will get $\| f\|_L \leq 1.$ \\
 	\end{block}
-	 Power iteration approximates the value of $\sigma(\bW)$.
+	 Power iteration approximates the value of $\|\bW\|_2$.
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
 
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
-	\begin{block}{What is a divergence?}
-		Let $\cS$ be the set of all possible probability distributions. Then $D: \cS \times \cS \rightarrow \bbR$ is a divergence if 
-		\begin{itemize}
-			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cS$;
-			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
-		\end{itemize}
-	\end{block}
-	\vspace{-0.2cm}
+	\vspace{-0.3cm}
 	\begin{block}{f-divergence minimization}
 		\vspace{-0.3cm}
 		\[
-		D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right) \rightarrow \min_p.
+			D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right) \rightarrow \min_p.
 		\]
+		Here $f: \bbR_+ \rightarrow \bbR$ is a convex, lower semicontinuous function satisfying $f(1) = 0$.
 	\end{block}
-	\vspace{-0.3cm}
 	\begin{block}{Variational divergence estimation}
 		\vspace{-0.3cm}
 		\[
 			D_f(\pi || p) \geq \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right],
 		\]
-		\vspace{-0.4cm}
-		where $ f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right)$ -- Fenchel conjugate.
+		\vspace{-0.7cm}
 	\end{block}
+	\begin{block}{Fenchel conjugate}
+		\vspace{-0.7cm}
+		\[
+		f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right), \quad f(u) = \sup_{t \in \text{dom}_{f^*}} \left( ut - f^*(t) \right)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\textbf{Note:} To evaluate lower bound we only need samples from $\pi(\bx)$ and $p(\bx)$. Hence, we could fit implicit generative model.
 	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
 \end{frame}
 %=======
@@ -127,7 +127,7 @@
 		\includegraphics[width=\linewidth]{figs/gan_evolution}
 	\end{figure}
 	\begin{itemize}
-		\item \textbf{Vanilla GAN} \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}
+		\item \textbf{Standard GAN} \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}
 		\item \textbf{DCGAN} \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}
 		\item \textbf{CoGAN} \href{https://arxiv.org/abs/1606.07536}{https://arxiv.org/abs/1606.07536}
 		\item \textbf{ProGAN} \href{https://arxiv.org/abs/1710.10196}{https://arxiv.org/abs/1710.10196} 
@@ -452,8 +452,6 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Precision-recall allows to select model with compromise with sample quality and sample diversity.
-		\vfill
 		\item Self-Attention GAN allows to make huge receptive field and reduce convolution inductive bias.
 		\vfill
 		\item BigGAN shows that large batch size increase model quality gradually.
