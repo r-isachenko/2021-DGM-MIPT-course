@@ -175,10 +175,6 @@
 			\item Separate learning rates for the generator and the discriminator.
 		\end{itemize}
 	\end{block}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.85\linewidth]{figs/sa_results2}
-	\end{figure}
 	\vspace{-0.3cm}
 	\begin{block}{Visualization of attention maps}
 		\begin{figure}
@@ -191,28 +187,12 @@
 \end{frame}
 %=======
 \begin{frame}{BigGAN}
-		\begin{block}{Technical Details}
-			\begin{itemize}
-				\item Hinge loss.
-				\item Self-Attention GAN baseline.
-				\item \textbf{Orthogonal regularization}
-				\vspace{-0.2cm}
-				\[
-					\| \bW^T \bW - \bI \|^2 \quad \Rightarrow \quad \| \bW^T \bW - \text{diag}(\bW^T \bW) \|^2
-				\]
-				\vspace{-0.8cm}
-				\item \textbf{Truncation trick.} Components of $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled.
-			\end{itemize}
-		\end{block}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/biggan_results}
-	\end{figure}
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
-\end{frame}
-%=======
-\begin{frame}{BigGAN}
+	\begin{block}{Batch-size is matter}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/biggan_results}
+		\end{figure}
+	\end{block}
 	\begin{block}{Samples (512x512)}
 		\begin{figure}
 			\centering
@@ -220,12 +200,6 @@
 		\end{figure}
 	\end{block}
 	\vspace{-0.4cm}
-	\begin{block}{Interpolations}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/biggan_interpolations}
-		\end{figure}
-	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
 \end{frame}
 %=======
@@ -244,7 +218,7 @@
 		\end{figure}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1710.10196}{Karras T. et al. Progressive Growing of GANs for Improved Quality, Stability, and Variation, 2017}
-\end{frame}
+s\end{frame}
 \begin{frame}{Progressive Growing GAN}
 	Grow both the generator and discriminator progressively, new layers will introduce higher-resolution details as the training progresses. 
 	\begin{itemize}
@@ -300,7 +274,17 @@
 
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
-
+%=======
+\begin{frame}{BigGAN}
+	\begin{block}{Truncation trick}
+		Components of $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled.
+	\end{block}
+	
+	Write down truncated normal distribution
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
+\end{frame}
+%=======
 \begin{frame}{StyleGAN}
 	\begin{block}{Truncation trick}
 		\vspace{-0.2cm}
