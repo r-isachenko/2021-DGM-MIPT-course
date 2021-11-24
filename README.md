@@ -31,7 +31,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 8 | October, 27 | Flows-based VAE posterior vs prior. Uniform and variational dequantization. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [video](https://youtu.be/epHEJBaS6og) | 
 | 9 | Novermber, 10 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [video](https://youtu.be/nMd2MwltiP4) | 
 | 10 | Novermber, 17 | Vanishing gradients and Mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. WGAN-GP. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [video](https://youtu.be/l77WWHEMjwU) | 
-| 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID, Precision-Recall) | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | TBA | 
+| 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID, Precision-Recall) | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [video](https://youtu.be/QqaDzyMZsPg) | 
 | 12 | December, 1 | GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). AVB. | TBA | TBA | 
 | 13 | December, 8 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | TBA | TBA | 
 
