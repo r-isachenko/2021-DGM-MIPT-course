@@ -15,7 +15,7 @@
 	\]
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item $a_k$ is a pointwise nonlinearities. We assume that $\| \sigma_k \|_L = 1$ (it holds for ReLU).
+		\item $\sigma_k$ is a pointwise nonlinearities. We assume that $\| \sigma_k \|_L = 1$ (it holds for ReLU).
 		\item $\mathbf{g}(\bx) = \bW \bx$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
 		\[
 			\| \mathbf{g} \|_L = \sup_\bx \| \nabla \mathbf{g}(\bx) \|_2 = \|\bW\|_2.
@@ -84,7 +84,7 @@
 	\begin{block}{Frechet Inception Distance}
 		\vspace{-0.3cm}
 		\[
-			D^2 (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right).
+			D^2 (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bSigma_{\pi} + \bSigma_p - 2 \sqrt{\bSigma_{\pi} \bSigma_p} \right).
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -121,6 +121,62 @@
 		\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 \end{frame}
 %=======
+\begin{frame}{Precision-Recall for Generative Models}
+	\begin{block}{What do we want from samples}
+		\begin{itemize}
+			\item \textbf{Sharpness}: generated samples should be of high quality.
+			\item \textbf{Diversity}: their variation should match that observed in the training set.
+		\end{itemize}
+	\end{block}
+	\vspace{-0.5cm}
+	\begin{figure}
+		\includegraphics[width=0.95\linewidth]{figs/pr_curve}
+	\end{figure}
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item \textbf{Precision} denotes the fraction of generated images that are realistic.
+		\item \textbf{Recall} measures the fraction of the training data manifold covered by the generator.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
+\begin{frame}{Precision-Recall for Generative Models}
+	\begin{itemize}
+		\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pi(\bx)$ -- real samples;
+		\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim p(\bx | \btheta)$ -- generated samples.
+	\end{itemize}
+	Embed samples using pretrained classifier network (as previously):
+	\[
+		\cG_{\pi} = \{\mathbf{g}_i\}_{i=1}^n, \quad \cG_{p} = \{\mathbf{g}_i\}_{i=1}^n.
+	\]
+	Define binary function:
+	\[
+		f(\mathbf{g}, \cG) = 
+		\begin{cases}
+			1, \text{if exists } \mathbf{g}' \in \cG: \| \mathbf{g}  - \mathbf{g}'\|_2 \leq \| \mathbf{g}' - \text{NN}_k(\mathbf{g}', \cG)\|_2; \\
+			0, \text{otherwise.}
+		\end{cases}
+	\]
+	\[
+		\text{Precision} (\cG_{\pi}, \cG_{p}) = \frac{1}{n} \sum_{\mathbf{g} \in \cG_{p}} f(\mathbf{g}, \cG_{\pi}); \quad \text{Recall} (\cG_{\pi}, \cG_{p}) = \frac{1}{n} \sum_{\mathbf{g} \in \cG_{\pi}} f(\mathbf{g}, \cG_{p}).
+	\]
+	\vspace{-0.4cm}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/pr_k_nearest}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
+\begin{frame}{Precision-Recall for Generative Models}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/pr_vs_fid}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=0.75\linewidth]{figs/pr_truncation}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
 \begin{frame}{Evolution of GANs}
 	\begin{figure}
 		\centering
@@ -136,28 +192,12 @@
 \end{frame}
 %=======
 \begin{frame}{Self-Attention GAN}
-	\begin{itemize}
-		\item Convolutional layers process the information in a local neighborhood.
-		\item Using convolutional layers alone is computationally inefficient for modeling long-range dependencies in images.
-	\end{itemize}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/conv-vs-sa}
-	\end{figure}
-	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{image credit: https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}
-\end{frame}
-%=======
-\begin{frame}{Self-Attention GAN}
+	Convolutional layers process the information in a local neighborhood $\Rightarrow$ inefficient for modeling long-range dependencies in images.
+	\vspace{-0.3cm}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/self-attention}
 	\end{figure}
-	\vspace{-0.2cm}
-	\begin{itemize}
-		\item $\bx$ -- feature vector for one feature location.
-		\item $N$ -- number of feature locations.
-	\end{itemize}
-	\vspace{0.5cm}
 	\[
 		\mathbf{f}(\bx) = \bW_f \bx, \quad \mathbf{g}(\bx) = \bW_g\bx, \quad \mathbf{h} (\bx) = \bW_h\bx, \quad \mathbf{v}(\bx) = \bW_v\bx
 	\]
@@ -167,23 +207,25 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{Self-Attention GAN}
-	\begin{block}{Technical Details}
-		\begin{itemize}
-			\item Hinge loss for training.
-			\item SpectralNorm in both the generator and the discriminator.
-			\item Separate learning rates for the generator and the discriminator.
-		\end{itemize}
+\begin{frame}{Self-Attention GAN}	
+	\begin{block}{Convolution vs Attention}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.7\linewidth]{figs/conv-vs-sa}
+		\end{figure}
 	\end{block}
-	\vspace{-0.3cm}
+	\vspace{-0.5cm}
 	\begin{block}{Visualization of attention maps}
+		\vspace{-0.3cm}
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figs/sa_maps}
 		\end{figure}
 	\end{block}
 
-	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
+	\myfootnote{\href{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{image credit: https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}	\\ 
+	\href{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}}
 \end{frame}
 %=======
 \begin{frame}{BigGAN}
@@ -275,18 +317,13 @@ s\end{frame}
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{BigGAN}
-	\begin{block}{Truncation trick}
+\begin{frame}{Truncation trick}
+	\begin{block}{BigGAN}
 		Components of $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled.
 	\end{block}
 	
 	Write down truncated normal distribution
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
-\end{frame}
-%=======
-\begin{frame}{StyleGAN}
-	\begin{block}{Truncation trick}
+	\begin{block}{StyleGAN}
 		\vspace{-0.2cm}
 		\[
 			\bw' = \hat{\bw} + \psi \cdot (\bw - \hat{\bw}), \quad \hat{\bw} = \bbE_{\bz} p(f(\bz))
@@ -297,30 +334,24 @@ s\end{frame}
 			\item $\psi=0.7$ is used for most of the results.
 			\item Truncation is done only at the low-resolution layers.
 		\end{itemize}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/stylegan_truncation}
-		\end{figure}
 	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{StyleGAN}
-	\begin{block}{Results}
-		\vspace{-0.2cm}
+	\begin{block}{Truncation trick}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.6\linewidth]{figs/stylegan_results}
+			\includegraphics[width=0.85\linewidth]{figs/stylegan_truncation}
 		\end{figure}
-	\vspace{-0.3cm}
+		\vspace{-0.4cm}
 	\end{block}
 	\begin{block}{Samples (1024x1024)}
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.8\linewidth]{figs/stylegan_samples}
 		\end{figure}
-	\vspace{-0.1cm}
 	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
@@ -436,6 +467,8 @@ s\end{frame}
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item Precision-recall allows to select model with compromise with sample quality and sample diversity.
+		\vfill
 		\item Self-Attention GAN allows to make huge receptive field and reduce convolution inductive bias.
 		\vfill
 		\item BigGAN shows that large batch size increase model quality gradually.
