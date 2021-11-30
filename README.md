@@ -31,8 +31,8 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 8 | October, 27 | Flows-based VAE posterior vs prior. Uniform and variational dequantization. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [video](https://youtu.be/epHEJBaS6og) | 
 | 9 | Novermber, 10 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [video](https://youtu.be/nMd2MwltiP4) | 
 | 10 | Novermber, 17 | Vanishing gradients and Mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. WGAN-GP. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [video](https://youtu.be/l77WWHEMjwU) | 
-| 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID, Precision-Recall) | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [video](https://youtu.be/QqaDzyMZsPg) | 
-| 12 | December, 1 | GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). AVB. | TBA | TBA | 
+| 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID). | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [video](https://youtu.be/QqaDzyMZsPg) | 
+| 12 | December, 1 | GAN evaluation (Precision-Recall). GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). Adversarial Variational Bayes. | [slides](lectures/lecture12/Isachenko2021DeepGenerativeModels12.pdf) | TBA | 
 | 13 | December, 8 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | TBA | TBA | 
 
 
@@ -44,6 +44,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 3 | October, 10 | October, 24 | Theory: Sylvester flows. Practice: VAE on CIFAR10, RealNVP on 2D. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw3.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw3.ipynb)|
 | 4 | October, 24 | November, 14 | Theory: ELBO surgery MI. Practice: AF prior in VAE, AR Decoder. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw4.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw4.ipynb)|
 | 5 | November, 15 | November, 28 | Theory: IW dequantization, LSGAN. Practice: Standard GAN, WGAN, WGAN-GP. | [![Open In Github](https://img.shields.io/static/v1.svg?logo=github&label=Repo&message=Open%20in%20Github&color=lightgrey)](homeworks/hw5.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-MIPT-course/blob/main/homeworks/hw5.ipynb)|
+| 5 | November, 29 | December, 12 | Individual tasks. | |
 
 ## Game rules
 - 6 homeworks each of 13 points = **78 points**
