@@ -318,11 +318,14 @@ s\end{frame}
 \end{frame}
 %=======
 \begin{frame}{Truncation trick}
-	\begin{block}{BigGAN}
+	\begin{block}{BigGAN: truncated normal sampling}
+		\vspace{-0.3cm}
+		\[
+			p(\bz | b) = \cN(\bz | 0, 1) / \int_{-\infty}^b \cN(\bz | 0, 1) d\bz
+		\]
 		Components of $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled.
 	\end{block}
 	
-	Write down truncated normal distribution
 	\begin{block}{StyleGAN}
 		\vspace{-0.2cm}
 		\[
@@ -404,7 +407,7 @@ s\end{frame}
 	\end{block}
 	What is the problem to make the variational posterior model an implicit model?
 	\begin{itemize}
-	\item The third term requires the ability to calculate the value of $q(\bz | \bx, \bphi)$.
+	\item The third term requires the explicit the value of $q(\bz | \bx, \bphi)$.
 	\item We could join second and third terms:
 		\vspace{-0.2cm}
 		\[
