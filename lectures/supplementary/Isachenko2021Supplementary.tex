@@ -1282,6 +1282,35 @@ where $i$ is treated as random variable:
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
+\begin{frame}{Vector Quantized VAE-2}
+\end{frame}
+%=======
+\begin{frame}{Vector Quantized VAE-2}
+	\begin{itemize}
+		\item Use multi-scale hierarchical model.
+		\item Use autoregressive prior model in each scale of the hierarchy.
+		\item Improve autoregressive prior (PixelSNAIL with self-attention in bottom layer, PixelCNN++ in bottom layer).
+		\item Train the encoder and decoder at the first stage, train the priors at the second stage.
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/vqvae2}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
+\end{frame}
+%=======
+\begin{frame}{Vector Quantized VAE-2}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/vqvae2_pseudo}
+		\end{figure}
+		\vspace{-0.2cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.85\linewidth]{figs/vqvae2_latents}
+		\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
+\end{frame}
 %=======
 \begin{frame}{Feature Quantized GAN}
 \end{frame}
