@@ -9,6 +9,33 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
+		\begin{itemize}
+			\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pi(\bx)$ -- real samples;
+			\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim p(\bx | \btheta)$ -- generated samples.
+		\end{itemize}
+		Embed samples using pretrained classifier network (as previously):
+		\[
+			\cG_{\pi} = \{\mathbf{g}_i\}_{i=1}^n, \quad \cG_{p} = \{\mathbf{g}_i\}_{i=1}^n.
+		\]
+		Define binary function:
+		\[
+			f(\mathbf{g}, \cG) = 
+			\begin{cases}
+				1, \text{if exists } \mathbf{g}' \in \cG: \| \mathbf{g}  - \mathbf{g}'\|_2 \leq \| \mathbf{g}' - \text{NN}_k(\mathbf{g}', \cG)\|_2; \\
+				0, \text{otherwise.}
+			\end{cases}
+		\]
+		\[
+			\text{Precision} (\cG_{\pi}, \cG_{p}) = \frac{1}{n} \sum_{\mathbf{g} \in \cG_{p}} f(\mathbf{g}, \cG_{\pi}); \quad \text{Recall} (\cG_{\pi}, \cG_{p}) = \frac{1}{n} \sum_{\mathbf{g} \in \cG_{\pi}} f(\mathbf{g}, \cG_{p}).
+		\]
+		\vspace{-0.4cm}
+		\begin{figure}
+			\includegraphics[width=0.7\linewidth]{figs/pr_k_nearest}
+		\end{figure}
+		\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/gan_evolution}
@@ -186,8 +213,8 @@
 	\begin{block}{Solution for adjoint function}
 		\vspace{-0.8cm}
 		\begin{align*}
-			 \frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \btheta(t)} dt \\
-			 \frac{\partial L}{\partial \bz(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} dt \\
+			 \frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \btheta(t)} dt + 0\\
+			 \frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)}\\
 		\end{align*}
 		\vspace{-1.5cm}
 	\end{block}
@@ -196,21 +223,22 @@
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
+	\vspace{-0.2cm}
 	\begin{block}{Forward pass}
-		\vspace{-0.4cm}
+		\vspace{-0.5cm}
 		\[
 			\bz(t_1) = \int^{t_1}_{t_0} f(\bz(t), \btheta) d t  + \bz_0 \quad \Rightarrow \quad \text{ODE Solver}
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.6cm}
 	\end{block}
 	\begin{block}{Backward pass}
-		\vspace{-0.4cm}
+		\vspace{-0.8cm}
 		\begin{equation*}
 			\left.
 				{\footnotesize 
 				\begin{aligned}
-					\frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \btheta(t)} dt \\
-					\frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} dt \\
+					\frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \btheta(t)} dt + 0 \\
+					\frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)} \\
 					\bz(t_0) &= - \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
 				\end{aligned}
 				}
@@ -218,9 +246,9 @@
 			 \Rightarrow
 			\text{ODE Solver}
 		\end{equation*}
+		\vspace{-0.4cm} 
 	\end{block}
-	\vspace{-0.4cm} 
-	\textbf{Note:} This transformation is a generalization of usual backprop.
+	\textbf{Note:} These scary formulas are the standard backprop in the discrete case.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/neural_ode}
@@ -374,7 +402,7 @@
 		Let $G_k \sim \text{Gumbel}$ for $k = 1, \dots, K$, i.e. $G = - \log (\log u)$, $u \sim \text{Uniform}[0, 1]$. Then a discrete random variable
 		\vspace{-0.2cm}
 		\[
-			z = \argmax_k (\log \pi_k + G_k)
+			z = \argmax_k (\log \pi_k + G_k), \quad \sum_k \pi_k = 1
 		\]
 		\vspace{-0.5cm} \\
 		has a categorical distribution $z \sim \text{Categorical}(\bpi)$ ($P(z = k) = \pi_k$).
@@ -508,33 +536,6 @@
 	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE-2}
-	\begin{itemize}
-		\item Use multi-scale hierarchical model.
-		\item Use autoregressive prior model in each scale of the hierarchy.
-		\item Improve autoregressive prior (PixelSNAIL with self-attention in bottom layer, PixelCNN++ in bottom layer).
-		\item Train the encoder and decoder at the first stage, train the priors at the second stage.
-	\end{itemize}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/vqvae2}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE-2}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\linewidth]{figs/vqvae2_pseudo}
-		\end{figure}
-		\vspace{-0.2cm}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.85\linewidth]{figs/vqvae2_latents}
-		\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
