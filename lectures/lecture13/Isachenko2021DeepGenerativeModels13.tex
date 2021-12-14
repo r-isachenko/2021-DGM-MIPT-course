@@ -56,46 +56,11 @@
 		\]	
 		\vspace{-0.5cm}
 	\end{block}
-	What is the problem to make the variational posterior model an \textbf{implicit} model?
-	\begin{itemize}
-	\item The third term requires the ability to calculate the value of $q(\bz | \bx, \bphi)$.
-	\item We could join second and third terms:
-		\vspace{-0.2cm}
-		\[
-			\mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bz)}{q(\bz| \bx, \bphi)} = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bz) \pi(\bx)}{q(\bz| \bx, \bphi) \pi (\bx)}.
-		\]
-		\vspace{-0.5cm}
-	\item We have to estimate density ratio 
-		\vspace{-0.2cm}
-		\[
-			r(\bx, \bz) = \frac{q_1(\bx, \bz)}{q_2(\bx, \bz)} = \frac{p(\bz) \pi(\bx)}{q(\bz| \bx, \bphi) \pi (\bx)}.
-		\] 
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
-\end{frame}
-%=======
-\begin{frame}{Recap of previous lecture}
-	Consider two distributions $q_1(\bx)$, $q_2(\bx)$ and probabilistic model
+	What is the problem to make the variational posterior model an \textbf{implicit} model? \\
+	 We have to estimate density ratio 
 	\[
-		p(\bx | y) = \begin{cases}
-			q_1(\bx), \text{ if } y = 1, \\
-			q_2(\bx), \text{ if } y = 0,
-		\end{cases}
-		\quad 
-		y \sim \text{Bern}(0.5).
-	\]
-	\vspace{-0.3cm}
-	\begin{block}{Density ratio trick}
-		\vspace{-0.7cm}
-		{\small
-		\begin{multline*}
-			\frac{q_1(\bx)}{q_2(\bx)} = \frac{p(\bx | y = 1)}{p(\bx | y = 0)} = \frac{p(y = 1 | \bx) p(\bx)}{p(y=1)} \bigg/ \frac{p(y = 0 | \bx) p(\bx)}{p(y=0)} = \\
-			= \frac{p(y = 1 | \bx)}{p(y = 0 | \bx)} = \frac{p(y = 1 | \bx)}{1 - p(y = 1 | \bx)} = \frac{D(\bx)}{1 - D(\bx)}
-		\end{multline*}
-		}
-		Here $D(\bx)$ is a discriminator model the output of which is a probability that $\bx$ is a sample
-		from $q_1(\bx)$ rather than from $q_2(\bx)$.
-	\end{block}
+		r(\bx, \bz) = \frac{q_1(\bx, \bz)}{q_2(\bx, \bz)} = \frac{p(\bz) \pi(\bx)}{q(\bz| \bx, \bphi) \pi (\bx)}.
+	\] 
 	\begin{block}{Adversarial Variational Bayes}
 		\vspace{-0.6cm}
 		\[
@@ -304,6 +269,7 @@
 \end{frame}
 %=======
 \begin{frame}{Continuous Normalizing Flows}
+	\vspace{-0.6cm}
 	\begin{block}{Forward transform + log-density}
 		\vspace{-0.8cm}
 		\[
@@ -322,61 +288,47 @@
 				- \text{trace} \left( \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} \right) 
 			\end{bmatrix} dt.
 		\]
-		\vspace{-0.4cm}
+		\vspace{-0.6cm}
 	\end{block}
 	\begin{itemize}
 		\item Discrete-in-time normalizing flows need invertible $f$. It costs $O(d^3)$ to get determinant of Jacobian.
 		\item Continuous-in-time flows require only smoothness of $f$. It costs $O(d^2)$ to get trace of Jacobian.
 	\end{itemize}
-	It is possible to reduce cost from $O(d^2)$ to $O(d)$!
-	\begin{block}{Hutchinson's trace estimator}
-		\vspace{-0.3cm}
-		\[
-		    \text{trace}(A) = \mathbb{E}_{p(\bepsilon)} \left[ \bepsilon^T A \bepsilon \right]; \quad \mathbb{E} [\bepsilon] = 0; \quad \text{Cov} (\bepsilon) = I.
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{FFJORD density estimation}
-		\vspace{-0.4cm}
-		\[
-		    \log p(\bz(t_1)) = \log p(\bz(t_0)) - \mathbb{E}_{p(\bepsilon)} \int_{t_0}^{t_1} \left[ \bepsilon^T \frac{\partial f}{\partial \bz} \bepsilon \right] dt.
-		\]
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
-\end{frame}
-%=======
-\begin{frame}{FFJORD}
-	\vspace{-0.4cm}
+	\vspace{-0.5cm}
 	\begin{minipage}[t]{0.4\columnwidth}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figs/cnf_flow.png}
+			\includegraphics[width=0.75\linewidth]{figs/cnf_flow.png}
 		\end{figure}
 	\end{minipage}%
 	\begin{minipage}[t]{0.6\columnwidth}
 		\begin{figure}
-		   \centering
-		   \includegraphics[width=0.85\linewidth]{figs/ffjord.png}
+			  \centering
+			  \includegraphics[width=0.8\linewidth]{figs/ffjord.png}
 		\end{figure}
 	\end{minipage}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/flow_comparison.png}
-	\end{figure}
 	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
 \end{frame}
 %=======
 \begin{frame}{FFJORD}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\linewidth]{figs/flow_comparison.png}
+	\end{figure}
+	\vspace{-0.4cm}
 	\begin{block}{Density estimation (forward KL)}
+		\vspace{-0.2cm}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figs/ffjord_results}
+			\includegraphics[width=0.8\linewidth]{figs/ffjord_forward}
 		\end{figure}
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Flows for variational inference (reverse KL)}
+		\vspace{-0.2cm}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figs/ffjord_vae}
+			\includegraphics[width=0.8\linewidth]{figs/ffjord_reverse}
 		\end{figure}
 	\end{block}
 
@@ -517,23 +469,6 @@
 		\item Quantization operation is not differentiable.
 		\item Straight-through gradient estimation is used to backpropagate the quantization operation.
 	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE}
-	\begin{itemize}
-		\item The prior distribution over the discrete latents $p(\hat{\bz})$ is a categorical distribution.
-		\item It could be made autoregressive by depending on other $\hat{\bz}$ in the feature map. 
-		\item While training the VQ-VAE, the prior is kept constant and uniform. 
-		\item After training, fit an autoregressive distribution (using PixelCNN) over $\hat{\bz}$.
-	\end{itemize}
-	\begin{block}{Samples}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/vqvae_results}
-		\end{figure}
-	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}

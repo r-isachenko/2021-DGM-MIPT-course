@@ -1282,7 +1282,69 @@ where $i$ is treated as random variable:
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
+\begin{frame}{FFJORD}
+\end{frame}
+%=======
+\begin{frame}{Continuous Normalizing Flows}
+	\begin{block}{Forward transform + log-density}
+		\vspace{-0.8cm}
+		\[
+			\begin{bmatrix}
+				\bx \\
+				\log p(\bx | \btheta)
+			\end{bmatrix}
+			= 
+			\begin{bmatrix}
+				\bz \\
+				\log p(\bz)
+			\end{bmatrix} + 
+			\int_{t_0}^{t_1} 
+			\begin{bmatrix}
+				f(\bz(t), \btheta) \\
+				- \text{trace} \left( \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)} \right) 
+			\end{bmatrix} dt.
+		\]
+		\vspace{-0.4cm}
+	\end{block}
+	\begin{itemize}
+		\item Discrete-in-time normalizing flows need invertible $f$. It costs $O(d^3)$ to get determinant of Jacobian.
+		\item Continuous-in-time flows require only smoothness of $f$. It costs $O(d^2)$ to get trace of Jacobian.
+	\end{itemize}
+	It is possible to reduce cost from $O(d^2)$ to $O(d)$!
+	\begin{block}{Hutchinson's trace estimator}
+		\vspace{-0.3cm}
+		\[
+		    \text{trace}(A) = \mathbb{E}_{p(\bepsilon)} \left[ \bepsilon^T A \bepsilon \right]; \quad \mathbb{E} [\bepsilon] = 0; \quad \text{Cov} (\bepsilon) = I.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{FFJORD density estimation}
+		\vspace{-0.4cm}
+		\[
+		    \log p(\bz(t_1)) = \log p(\bz(t_0)) - \mathbb{E}_{p(\bepsilon)} \int_{t_0}^{t_1} \left[ \bepsilon^T \frac{\partial f}{\partial \bz} \bepsilon \right] dt.
+		\]
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
+\end{frame}
+%=======
 \begin{frame}{Vector Quantized VAE-2}
+\end{frame}
+%=======
+\begin{frame}{Vector Quantized VAE}
+	\begin{itemize}
+		\item The prior distribution over the discrete latents $p(\hat{\bz})$ is a categorical distribution.
+		\item It could be made autoregressive by depending on other $\hat{\bz}$ in the feature map. 
+		\item While training the VQ-VAE, the prior is kept constant and uniform. 
+		\item After training, fit an autoregressive distribution (using PixelCNN) over $\hat{\bz}$.
+	\end{itemize}
+	\begin{block}{Samples}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/vqvae_results}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
