@@ -33,7 +33,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 10 | Novermber, 17 | Vanishing gradients and Mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. WGAN-GP. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [video](https://youtu.be/l77WWHEMjwU) | 
 | 11 | Novermber, 24 | Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID). | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [video](https://youtu.be/QqaDzyMZsPg) | 
 | 12 | December, 1 | GAN evaluation (Precision-Recall). GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). Adversarial Variational Bayes. | [slides](lectures/lecture12/Isachenko2021DeepGenerativeModels12.pdf) | [video](https://youtu.be/a8-oOX0Pl5k) | 
-| 13 | December, 15 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | [slides](lectures/lecture13/Isachenko2021DeepGenerativeModels13.pdf) | TBA | 
+| 13 | December, 15 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | [slides](lectures/lecture13/Isachenko2021DeepGenerativeModels13.pdf) | [video](https://youtu.be/rNv8Szg-0Bw) | 
 
 
 ## Homeworks 
